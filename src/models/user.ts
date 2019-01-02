@@ -7,7 +7,7 @@ export class User extends Model {
 
     public static jsonSchema = {
         type: 'object',
-        required: ['fname, lname, username, email, password'],
+        required: ['fname', 'lname', 'username', 'email', 'password'],
 
         properties: {
             fname: { type: 'string', minLength: 1, maxLength: 30 },

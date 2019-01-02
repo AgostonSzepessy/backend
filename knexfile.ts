@@ -1,3 +1,4 @@
+// Database config stuff
 module.exports = {
     client: 'mysql',
     connection: {
