@@ -3,6 +3,6 @@
     "rules": {
         "quotemark": [true, "single"],
         "object-literal-sort-keys": false,
-        "trailing-comma": true,
+        "trailing-comma": true
     }
 }

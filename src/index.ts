@@ -1,17 +1,20 @@
 import express from 'express';
+import Knex = require('knex');
+import { Config } from 'knex';
+import { Model } from 'objection';
 
 import { logger } from './config/logger';
-import { sequelize } from './config/database';
+
+// Setup database
+function knexConfig(): Config {
+    return require('../knexfile');
+}
+
+export const knex: Knex = Knex(knexConfig());
+
+Model.knex(knex);
 
 const PORT = process.env.PORT || 8080;
-
-// Connect to database
-sequelize.authenticate().then(() => {
-    logger.info('Connected to database');
-}).catch(err => {
-    logger.error('Unable to conenct to database: ', err);
-    process.exit(1);
-});
 
 const app = express();
 
@@ -20,5 +23,5 @@ app.get('/', (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Listening on ${PORT}`);
+    logger.info(`Listening on ${PORT}`);
 });
