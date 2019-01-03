@@ -1,7 +1,7 @@
-import * as argon2 from 'argon2';
-
-import { logger } from '../config/logger';
 import { userRepository } from '../repositories/user';
+import { hasher } from '../utils/hasher';
+import { logger } from '../utils/logger';
+import { info } from 'winston';
 
 class UserService {
     /**
@@ -15,15 +15,33 @@ class UserService {
     public async register(username: string, fname: string, lname: string, email: string,
                           password: string) {
         try {
-            const hashedPassword = await argon2.hash(password, {
-                type: argon2.argon2id
-            });
+            const hashedPassword = await hasher.hash(password);
 
             const user = await userRepository.register(username, fname, lname, email, hashedPassword);
             return user.username;
         } catch(err) {
             logger.error('Error registering user: ', err);
             throw new Error(`Error registering ${username}`);
+        }
+    }
+
+    public async findByUsername(username: string) {
+        return userRepository.findByUsername(username);
+    }
+
+    public async authenticate(username: string, password: string) {
+        try {
+            const user = await this.findByUsername(username);
+
+            if(!user) {
+                throw new Error(`${username} not found`);
+            }
+
+            return hasher.verify(user.password, password);
+
+        } catch(err) {
+            logger.error('Error during authentication ', err);
+            throw new Error(err);
         }
     }
 }

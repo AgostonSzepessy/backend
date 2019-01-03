@@ -4,6 +4,10 @@
         "quotemark": [true, "single"],
         "object-literal-sort-keys": false,
         "trailing-comma": true,
-        "whitespace": [false, "check-branch"]
+        "whitespace": [false, "check-branch"],
+        "indent": [true, "spaces", 4],
+        "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"],
+        "interface-name": [true, "never-prefix"],
+        "ordered-imports": false
     }
 }

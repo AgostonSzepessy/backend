@@ -5,8 +5,10 @@ import Knex = require('knex');
 import { Config } from 'knex';
 import { Model } from 'objection';
 
-import { logger } from './config/logger';
+import { User } from './models/user';
 import publicApi from './routes/public-api';
+import securedApi from './routes/secured-api';
+import { logger } from './utils/logger';
 
 // Setup database
 function knexConfig(): Config {
@@ -25,10 +27,9 @@ app.use(cookieParser());
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
 
-const router = express.Router();
-publicApi(router);
-
-app.use('/public-api', router);
+// Setup API routes
+app.use('/public-api', publicApi);
+app.use('/api', securedApi);
 
 app.get('/', (req, res) => {
     res.send('Hello, there!');
