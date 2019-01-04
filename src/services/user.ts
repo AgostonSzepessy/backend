@@ -25,10 +25,19 @@ class UserService {
         }
     }
 
+    /**
+     * Finds a user by their username
+     * @param username username for User to find
+     */
     public async findByUsername(username: string) {
         return userRepository.findByUsername(username);
     }
 
+    /**
+     * Checks if the user submitted the right credentials
+     * @param username username for User
+     * @param password plaintext password for User
+     */
     public async authenticate(username: string, password: string) {
         try {
             const user = await this.findByUsername(username);

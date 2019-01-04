@@ -6,7 +6,6 @@ import { Jwt } from '../utils/Jwt';
 import ResponseValue from '../utils/ResponseValue';
 import { logger } from '../utils/logger';
 import { userService } from '../services/user';
-import { info } from 'winston';
 
 const router = express.Router();
 

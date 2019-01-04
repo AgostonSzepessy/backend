@@ -1,5 +1,8 @@
 import { Model, RelationMappings } from 'objection';
 
+/**
+ * Models the Movie Schema
+ */
 export class Movie extends Model {
     public static tableName = 'Movie';
     public static idColumn = 'movie_id';
