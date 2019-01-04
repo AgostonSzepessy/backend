@@ -12,15 +12,20 @@ class Hasher {
     private readonly PEPPER = 'cîLx9ÓEóüVâtXÛÌÙ6w¨¢9k·fñ§ê´vMQ4FÎÑ3Ã¶XÜôcÒÿ×²pGÀ·µ®T¯²¤ú9î8ï«hDëw98ÙGºéòRUK¶5¡¶xcýL½J¨ý¬Æ6uÇAC±ã±p¾«ÛÝÚrg«GEÆs±LVQkjRnY³øBÉri»Ò';
 
     /**
+     * Settings to use when hashing a password
+     */
+    private readonly ARGON2_SETTINGS = {
+        type: argon2.argon2id, // Recommended default from IETF draft
+        memoryCost: 2 ** 16, // Uses 16 MB of memory. TODO: maybe change later?
+    };
+
+    /**
      * Wraps argon2 with recommended settings
      * @param password Password to hash
      */
     public async hash(password: string) {
         const pepperedPassword = password + this.PEPPER;
-        return argon2.hash(pepperedPassword, {
-            type: argon2.argon2id, // Recommended default from IETF draft
-            memoryCost: 2 ** 16, // Uses 16 MB of memory. TODO: maybe change later?
-        });
+        return argon2.hash(pepperedPassword, this.ARGON2_SETTINGS);
     }
 
     /**
@@ -30,7 +35,7 @@ class Hasher {
      */
     public async verify(hash: string, password: string) {
         const pepperedPassword = password + this.PEPPER;
-        return argon2.verify(hash, password);
+        return argon2.verify(hash, pepperedPassword);
     }
 }
 

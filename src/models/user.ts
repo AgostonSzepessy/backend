@@ -1,5 +1,8 @@
 import { Model, RelationMappings } from 'objection';
 
+/**
+ * Object to represent the User schema
+ */
 export class User extends Model {
 
     public static tableName = 'User';

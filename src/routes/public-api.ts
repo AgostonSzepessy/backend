@@ -2,14 +2,22 @@ import express from 'express';
 import extend from 'extend';
 import jwt from 'jsonwebtoken';
 
-import JwtPayload from '../utils/JwtPayload';
+import { Jwt } from '../utils/Jwt';
 import ResponseValue from '../utils/ResponseValue';
 import { logger } from '../utils/logger';
 import { userService } from '../services/user';
-import { UserAuthRequest } from '../utils/requests';
+import { info } from 'winston';
 
 const router = express.Router();
 
+/**
+ * Registers a user
+ * @param username username for user
+ * @param fname first name for user
+ * @param lname last name for user
+ * @param email last name for user
+ * @param password password for user
+ */
 router.post('/register', async (req, res) => {
     const username = req.body.username;
     const fname = req.body.fname;
@@ -35,6 +43,11 @@ router.post('/register', async (req, res) => {
     }
 });
 
+/**
+ * Logs the user in and returns a JWT
+ * @param username username for user
+ * @param password password for user
+ */
 router.post('/login', async (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
@@ -48,8 +61,10 @@ router.post('/login', async (req, res) => {
             if(!authenticated) {
                 res.status(401).json(new ResponseValue(false, 'Invalid username or password'));
             } else {
-                const payload = new JwtPayload(username);
-                const token = jwt.sign(payload, JwtPayload.TOKEN_SECRET, {
+                const payload: Jwt.Payload = {
+                    username,
+                };
+                const token = jwt.sign(payload, Jwt.SECRET, {
                     expiresIn: '7d'
                 });
 
@@ -59,14 +74,14 @@ router.post('/login', async (req, res) => {
                 // Don't send password back
                 delete userData.password;
 
-                res.status(200).json({
-                    success: true,
-                    message: 'Authenticcated',
+                res.status(200).json(new ResponseValue(true, {
+                    message: 'Authenticated',
                     token,
-                    user: userData
-                });
+                    user: userData,
+                }));
             }
         } catch(err) {
+            logger.error(err);
             res.status(500).json(new ResponseValue(false, err));
         }
     }

@@ -38,7 +38,6 @@ class UserService {
             }
 
             return hasher.verify(user.password, password);
-
         } catch(err) {
             logger.error('Error during authentication ', err);
             throw new Error(err);

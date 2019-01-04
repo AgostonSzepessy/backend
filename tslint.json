@@ -8,6 +8,7 @@
         "indent": [true, "spaces", 4],
         "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"],
         "interface-name": [true, "never-prefix"],
-        "ordered-imports": false
+        "ordered-imports": false,
+        "no-angle-bracket-type-assertion": false
     }
 }

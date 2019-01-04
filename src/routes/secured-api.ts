@@ -3,32 +3,19 @@ import fs from 'fs';
 import jwt from 'jsonwebtoken';
 
 import { userService } from '../services/user';
-import JwtPayload from '../utils/JwtPayload';
+import { Jwt } from '../utils/Jwt';
 import { logger } from '../utils/logger';
 import ResponseValue from '../utils/ResponseValue';
+import { RequestWithUser } from '../interfaces/requests';
 
 // All protected routes are in the secured directory
 const SECURED_ROUTES = __dirname + '/secured/';
 
 const router = express.Router();
 
-import { User } from "../models/user";
-
-declare global {
-    namespace Express {
-        export interface Request {
-            user: User;
-        }
-    }
-}
-
-interface RequestWithUser extends Request {
-    user: User;
-}
-
 // Checks if there's a JWT in the request, attempts to decode it and
 // either authorizes the request to continue, or sends an error
-router.use(async (req, res, next) => {
+router.use(async (req: RequestWithUser, res, next) => {
     const token: string = req.body.token || req.query.token || req.headers['x-access-token'];
 
     if(!token) {
@@ -36,21 +23,25 @@ router.use(async (req, res, next) => {
         return;
     }
 
-    jwt.verify(token, JwtPayload.TOKEN_SECRET, async (err, decoded) => {
+    jwt.verify(token, Jwt.SECRET, async (err, decoded: string | object | Jwt.Payload) => {
         if(err) {
             res.status(401).json(new ResponseValue(false, 'Invalid token'));
         } else {
             try {
-                const payload = decoded as JwtPayload;
-                const user = await userService.findByUsername(payload.username);
+                if(Jwt.isPayload(decoded) && decoded.username) {
+                    const user = await userService.findByUsername(decoded.username);
 
-                if(!user) {
-                    res.status(401).json(new ResponseValue(false, 'User does not exist'));
-                    return;
+                    if(!user) {
+                        res.status(401).json(new ResponseValue(false, 'User does not exist'));
+                        return;
+                    }
+
+                    req.user = user;
+                    next();
+
+                } else {
+                    res.status(401).json(new ResponseValue(false, 'Invalid token'));
                 }
-
-                req.user = user;
-                next();
             } catch(err) {
                 logger.error('Could not find user', err);
                 res.status(500).json(new ResponseValue(false, 'Could not find user'));
@@ -59,7 +50,8 @@ router.use(async (req, res, next) => {
     });
 });
 
-// Setup all secured routes
+// Setup all secured routes. In order for this to work, module.exports must be
+// used instead of export default
 fs.readdirSync(SECURED_ROUTES).forEach((file) => require(SECURED_ROUTES + file)(router));
 
 export default router;
