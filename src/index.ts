@@ -9,6 +9,7 @@ import { User } from './models/user';
 import publicApi from './routes/public-api';
 import securedApi from './routes/secured-api';
 import { logger } from './utils/logger';
+import { errorHandler } from './middleware/error-handler';
 
 // Setup database
 function knexConfig(): Config {
@@ -34,6 +35,9 @@ app.use('/api', securedApi);
 app.get('/', (req, res) => {
     res.send('Hello, there!');
 });
+
+// Define all error handlers last
+app.use(errorHandler);
 
 app.listen(PORT, () => {
     logger.info(`Listening on ${PORT}`);
