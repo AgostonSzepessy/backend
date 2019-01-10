@@ -2,6 +2,7 @@ import { userRepository } from '../repositories/user';
 import { hasher } from '../utils/hasher';
 import { logger } from '../utils/logger';
 import { info } from 'winston';
+import { MovnetError } from '../middleware/MovnetError';
 
 class UserService {
     /**
@@ -20,8 +21,7 @@ class UserService {
             const user = await userRepository.register(username, fname, lname, email, hashedPassword);
             return user.username;
         } catch(err) {
-            logger.error('Error registering user: ', err);
-            throw new Error(`Error registering ${username}`);
+            throw new MovnetError(500, `Error registering ${username}`);
         }
     }
 
@@ -43,13 +43,12 @@ class UserService {
             const user = await this.findByUsername(username);
 
             if(!user) {
-                throw new Error(`${username} not found`);
+                throw new MovnetError(500, `${username} not found`);
             }
 
             return hasher.verify(user.password, password);
         } catch(err) {
-            logger.error('Error during authentication ', err);
-            throw new Error(err);
+            throw new MovnetError(500, 'Error with validation');
         }
     }
 }

@@ -1,5 +1,6 @@
 import { User } from '../models/user';
 import { logger } from '../utils/logger';
+import { MovnetError } from '../middleware/MovnetError';
 
 /**
  * Handles interactions with the database for User
@@ -20,8 +21,7 @@ class UserRepository {
                 username, fname, lname, email, password
             });
         } catch(err) {
-            logger.error('Error inserting user: ', err);
-            throw new Error(`Error saving ${username} to database`);
+            throw new MovnetError(500, `Error saving ${username} to database`);
         }
     }
 

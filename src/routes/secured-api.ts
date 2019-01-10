@@ -7,6 +7,8 @@ import { Jwt } from '../utils/Jwt';
 import { logger } from '../utils/logger';
 import ResponseValue from '../utils/ResponseValue';
 import { RequestWithUser } from '../interfaces/requests';
+import { asyncHandler } from '../middleware/async-handler';
+import { MovnetError } from '../middleware/MovnetError';
 
 // All protected routes are in the secured directory
 const SECURED_ROUTES = __dirname + '/secured/';
@@ -15,40 +17,33 @@ const router = express.Router();
 
 // Checks if there's a JWT in the request, attempts to decode it and
 // either authorizes the request to continue, or sends an error
-router.use(async (req: RequestWithUser, res, next) => {
+router.use(asyncHandler(async (req: RequestWithUser, res, next) => {
     const token: string = req.body.token || req.query.token || req.headers['x-access-token'];
 
     if(!token) {
-        res.status(422).json(new ResponseValue(false, 'No token provided'));
-        return;
+        throw new MovnetError(422, 'No token provided');
     }
 
     jwt.verify(token, Jwt.SECRET, async (err, decoded: string | object | Jwt.Payload) => {
         if(err) {
-            res.status(401).json(new ResponseValue(false, 'Invalid token'));
+            throw new MovnetError(401, 'Invalid token');
         } else {
-            try {
-                if(Jwt.isPayload(decoded) && decoded.username) {
-                    const user = await userService.findByUsername(decoded.username);
+            if(Jwt.isPayload(decoded) && decoded.username) {
+                const user = await userService.findByUsername(decoded.username);
 
-                    if(!user) {
-                        res.status(401).json(new ResponseValue(false, 'User does not exist'));
-                        return;
-                    }
-
-                    req.user = user;
-                    next();
-
-                } else {
-                    res.status(401).json(new ResponseValue(false, 'Invalid token'));
+                if(!user) {
+                    throw new MovnetError(401, 'Invalid token');
                 }
-            } catch(err) {
-                logger.error('Could not find user', err);
-                res.status(500).json(new ResponseValue(false, 'Could not find user'));
+
+                req.user = user;
+                next();
+
+            } else {
+                throw new MovnetError(401, 'Invalid token');
             }
         }
     });
-});
+}));
 
 // Setup all secured routes. In order for this to work, module.exports must be
 // used instead of export default
