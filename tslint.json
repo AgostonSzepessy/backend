@@ -6,7 +6,7 @@
         "trailing-comma": true,
         "whitespace": [false, "check-branch"],
         "indent": [true, "spaces", 4],
-        "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"],
+        "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore", "allow-snake-case"],
         "interface-name": [true, "never-prefix"],
         "ordered-imports": false,
         "no-angle-bracket-type-assertion": false

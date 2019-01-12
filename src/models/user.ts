@@ -1,60 +1,46 @@
-import { Model, RelationMappings } from 'objection';
-import { join } from 'path';
+import { knex } from '../utils/knex';
+import { logger } from '../utils/logger';
 
 /**
  * Object to represent the User schema
  */
-export class User extends Model {
+export class User {
+    public static async register(username: string, fname: string, lname: string, email: string,
+                                 password: string) {
+        const data = {
+            username,
+            fname,
+            lname,
+            email,
+            password,
+        };
 
-    public static tableName = 'User';
-    public static idColumn = 'username';
+        await knex('User').insert(data);
 
-    public static jsonSchema = {
-        type: 'object',
-        required: ['fname', 'lname', 'username', 'email', 'password'],
+        return new User(username, fname, lname, email, password);
+    }
 
-        properties: {
-            fname: { type: 'string', minLength: 1, maxLength: 30 },
-            lname: { type: 'string', minLength: 1, maxLength: 30 },
-            username: { type: 'string', minLength: 1, maxLength: 20 },
-            email: { type: 'string', minLength: 1, maxLength: 320 },
-            password: { type: 'string', minLength: 1, maxLength: 128 },
-        }
-    };
+    public static async findByUsername(username: string) {
+        const data = {
+            username,
+        };
 
-    public static modelPaths = [__dirname];
+        const userData = (await knex('User').select('*').where('username', username))[0];
 
-    public static relationMappings: RelationMappings = {
-        message: {
-            relation: Model.HasManyRelation,
-            modelClass: join(__dirname, 'Message'),
-            join: {
-                from: 'User.username',
-                to: 'Message.message_id',
-            },
-        },
+        return new User(userData.username, userData.password, userData.email, userData.fname, userData.lname);
+    }
 
-        chat: {
-            relation: Model.ManyToManyRelation,
-            modelClass: join(__dirname, 'Chat'),
-            join: {
-                from: 'User.username',
-                through: {
-                    from: 'ChatParticipation.username',
-                    to: 'ChatParticipation.chad_id',
-                },
-                to: 'Chat.chat_id',
-            },
-        }
-    };
+    public password: string;
+    public username: string;
+    public email: string;
+    public fname: string;
+    public lname: string;
 
-    // Variable names should match up with database column
-    // names so this rule needs disabled
-    /* tslint:disable:variable-name */
-    public fname!: string;
-    public lname!: string;
-    public username!: string;
-    public email!: string;
-    public password!: string;
-    /* tslint:enable:variable-name */
+    constructor(username: string, password: string, email: string, fname: string, lname: string) {
+        this.password = password;
+        this.username = username;
+        this.email = email;
+        this.fname = fname;
+        this.lname = lname;
+    }
 }

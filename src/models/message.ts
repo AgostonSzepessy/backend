@@ -1,52 +1,31 @@
-import { Model, RelationMappings } from 'objection';
-import { join } from 'path';
+import { knex } from '../utils/knex';
 
-export class Message extends Model {
-    public static tableName = 'Message';
-    public static idColumn = 'message_id';
+export class Message {
+    public static async add(chat_id: number, username: string, message: string) {
+        const data = {
+            chat_id,
+            username,
+            message,
+        };
 
-    public static jsonSchema = {
-        type: 'object',
-        required: ['chat_id', 'username', 'message_text'],
+        const msgData = await knex('Message').insert(data).returning('*');
 
-        properties: {
-            message_id: { type: 'bigint' },
-            chat_id: { type: 'bigint' },
-            username: { type: 'string', minLength: 1, maxLength: 20 },
-            message_text: { type: 'string', minLength: 1, maxLength: 65_535 },
-            date_time: { type: 'string' },
-        }
-    };
+        const msg = new Message(msgData.chat_id, msgData.message, msgData.username);
+        msg.date_time = msgData.date_time;
+        msg.message_id = msgData.message_id;
 
-    public static modelPaths = [__dirname];
+        return msg;
+    }
 
-    public static relationMappings: RelationMappings = {
-        user: {
-            relation: Model.BelongsToOneRelation,
-            modelClass: join(__dirname, 'user'),
-            join: {
-                from: 'Message.username',
-                to: 'User.username',
-            }
-        },
-
-        chat: {
-            relation:Model.BelongsToOneRelation,
-            modelClass: join(__dirname, 'chat'),
-            join: {
-                from: 'Message.chat_id',
-                to: 'Chat.chat_id',
-            }
-        }
-    };
-
-    // Variable names should match up with database column
-    // names so this rule needs disabled
-    /* tslint:disable:variable-name */
-    public message_id!: bigint;
-    public chat_id!: bigint;
-    public username!: string;
-    public message_text!: string;
+    public message: string;
+    public username: string;
+    public chat_id: number;
+    public message_id!: number;
     public date_time!: string;
-    /* tslint:enable:variable-name */
+
+    constructor(chat_id: number, message: string, username: string) {
+        this.chat_id = chat_id;
+        this.message = message;
+        this.username = username;
+    }
 }
