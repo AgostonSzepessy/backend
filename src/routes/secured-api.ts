@@ -2,7 +2,7 @@ import express, { Request } from 'express';
 import fs from 'fs';
 import jwt from 'jsonwebtoken';
 
-import { userService } from '../services/user';
+import { UserService } from '../services/user';
 import { Jwt } from '../utils/Jwt';
 import { logger } from '../utils/logger';
 import ResponseValue from '../utils/ResponseValue';
@@ -24,22 +24,25 @@ router.use(asyncHandler(async (req: RequestWithUser, res, next) => {
         throw new MovnetError(422, 'No token provided');
     }
 
+    // Can't throw MovnetError here because jwt.verify() won't be able to
+    // handle it and it'll crash
     jwt.verify(token, Jwt.SECRET, async (err, decoded: string | object | Jwt.Payload) => {
         if(err) {
-            throw new MovnetError(401, 'Invalid token');
+            res.status(401).json(new ResponseValue(false, 'Invalid token'));
         } else {
             if(Jwt.isPayload(decoded) && decoded.username) {
-                const user = await userService.findByUsername(decoded.username);
+                const user = await UserService.findByUsername(decoded.username);
 
                 if(!user) {
-                    throw new MovnetError(401, 'Invalid token');
+                    res.status(401).json(new ResponseValue(false, 'Invalid token'));
+                    return;
                 }
 
                 req.user = user;
                 next();
 
             } else {
-                throw new MovnetError(401, 'Invalid token');
+                res.status(401).json(new ResponseValue(false, 'Invalid token'));
             }
         }
     });

@@ -1,6 +1,15 @@
 import { knex } from '../utils/knex';
 
+/**
+ * Model for messages
+ */
 export class Message {
+    /**
+     * Adds a new message to the chat
+     * @param chat_id ID of chat to add message to
+     * @param username username of user sending message
+     * @param message contents of message
+     */
     public static async add(chat_id: number, username: string, message: string) {
         const data = {
             chat_id,
@@ -8,7 +17,7 @@ export class Message {
             message,
         };
 
-        const msgData = await knex('Message').insert(data).returning('*');
+        const msgData = (await knex('Message').insert(data).returning('*'))[0];
 
         const msg = new Message(msgData.chat_id, msgData.message, msgData.username);
         msg.date_time = msgData.date_time;

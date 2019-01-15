@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 import { Jwt } from '../utils/Jwt';
 import ResponseValue from '../utils/ResponseValue';
 import { logger } from '../utils/logger';
-import { userService } from '../services/user';
+import { UserService } from '../services/user';
 import { asyncHandler } from '../middleware/async-handler';
 import { MovnetError } from '../middleware/MovnetError';
 
@@ -29,7 +29,7 @@ router.post('/register', asyncHandler(async (req, res) => {
     if(!username || !fname || !lname || !email || !password) {
         throw new MovnetError(422, 'All fields must be filled');
     } else {
-        await userService.register(username, fname, lname, email, password);
+        await UserService.register(username, fname, lname, email, password);
         res.status(200).json({
             success: true,
             message: `${username} added`
@@ -49,7 +49,7 @@ router.post('/login', asyncHandler(async (req, res) => {
     if(!username || !password) {
         throw new MovnetError(422, 'Username and password must have values');
     } else {
-        const authenticated = await userService.authenticate(username, password);
+        const authenticated = await UserService.authenticate(username, password);
 
         if(!authenticated) {
             throw new MovnetError(401, 'Invalid username or password');
@@ -61,7 +61,7 @@ router.post('/login', asyncHandler(async (req, res) => {
                 expiresIn: '7d'
             });
 
-            const usr = await userService.findByUsername(username);
+            const usr = await UserService.findByUsername(username);
             const userData = extend(true, usr, {});
 
             // Don't send password back

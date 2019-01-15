@@ -25,7 +25,7 @@ export class Movie {
             synopsis,
         };
 
-        const movie_id = await knex('Movie').insert(data).returning('movie_id');
+        const movie_id = (await knex('Movie').insert(data).returning('movie_id'))[0];
 
         return new Movie(movie_id, name, runtime, genre, parental_rating, poster_url, synopsis);
     }

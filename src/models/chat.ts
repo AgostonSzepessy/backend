@@ -9,13 +9,13 @@ export class Chat {
      * @param name Name of chat
      * @param eventId Event this chat is for
      */
-    public static create(name: string, eventId: number) {
+    public static async create(name: string, eventId: number): Promise<number> {
         const chatData = {
             name,
             event_id: eventId,
         };
 
-        return knex('Chat').returning('chat_id').insert(chatData);
+        return (await knex('Chat').returning('chat_id').insert(chatData))[0];
     }
 
     /**
@@ -23,20 +23,20 @@ export class Chat {
      * @param username Username of user to add to chat
      * @param chatId Chat to add them to
      */
-    public static addUser(username: string, chatId: number) {
+    public static async addUser(username: string, chatId: number): Promise<number> {
         const chatParticipation = {
             username,
             chat_id: chatId,
         };
 
-        return knex('ChatParticipation').insert(chatParticipation).returning('chat_participation_id');
+        return (await knex('ChatParticipation').insert(chatParticipation).returning('chat_participation_id'))[0];
     }
 
     /**
      * Deletes a chat
      * @param chatId Chat to delete
      */
-    public static deleteChat(chatId: number) {
-        knex('Chat').where('chat_id', chatId).del();
+    public static async deleteChat(chatId: number) {
+        return knex('Chat').where('chat_id', chatId).del();
     }
 }
