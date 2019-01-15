@@ -1,24 +1,11 @@
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import express from 'express';
-import Knex = require('knex');
-import { Config } from 'knex';
-import { Model } from 'objection';
 
-import { User } from './models/user';
 import publicApi from './routes/public-api';
 import securedApi from './routes/secured-api';
 import { logger } from './utils/logger';
 import { errorHandler } from './middleware/error-handler';
-
-// Setup database
-function knexConfig(): Config {
-    return require('../knexfile');
-}
-
-export const knex: Knex = Knex(knexConfig());
-
-Model.knex(knex);
 
 const PORT = process.env.PORT || 8080;
 

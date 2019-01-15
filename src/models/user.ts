@@ -1,39 +1,65 @@
-import { Model, RelationMappings } from 'objection';
+import { knex } from '../utils/knex';
+import { logger } from '../utils/logger';
+import { MovnetError } from '../middleware/MovnetError';
 
 /**
  * Object to represent the User schema
  */
-export class User extends Model {
+export class User {
+    /**
+     * Adds a new user to the database
+     * @param username username of user
+     * @param fname first name of user
+     * @param lname last name of user
+     * @param email email of user
+     * @param password password of user
+     */
+    public static async register(username: string, fname: string, lname: string, email: string,
+                                 password: string) {
+        const data = {
+            username,
+            fname,
+            lname,
+            email,
+            password,
+        };
 
-    public static tableName = 'User';
-    public static idColumn = 'username';
+        await knex('User').insert(data);
 
-    public static jsonSchema = {
-        type: 'object',
-        required: ['fname', 'lname', 'username', 'email', 'password'],
+        return new User(username, fname, lname, email, password);
+    }
 
-        properties: {
-            fname: { type: 'string', minLength: 1, maxLength: 30 },
-            lname: { type: 'string', minLength: 1, maxLength: 30 },
-            username: { type: 'string', minLength: 1, maxLength: 20 },
-            email: { type: 'string', minLength: 1, maxLength: 320 },
-            password: { type: 'string', minLength: 1, maxLength: 128 },
+    /**
+     * Finds a user by their username
+     * @param username username of user
+     */
+    public static async findByUsername(username: string) {
+        const data = {
+            username,
+        };
+
+        const result = await knex('User').select('*').where('username', username);
+
+        if(result.length <= 0) {
+            throw new MovnetError(401, 'User not found');
         }
-    };
 
-    public static modelPaths = [__dirname];
+        const userData = result[0];
 
-    public static relationMappings: RelationMappings = {
+        return new User(userData.username, userData.password, userData.email, userData.fname, userData.lname);
+    }
 
-    };
+    public password: string;
+    public username: string;
+    public email: string;
+    public fname: string;
+    public lname: string;
 
-    // Variable names should match up with database column
-    // names so this rule needs disabled
-    /* tslint:disable:variable-name */
-    public fname!: string;
-    public lname!: string;
-    public username!: string;
-    public email!: string;
-    public password!: string;
-    /* tslint:enable:variable-name */
+    constructor(username: string, password: string, email: string, fname: string, lname: string) {
+        this.password = password;
+        this.username = username;
+        this.email = email;
+        this.fname = fname;
+        this.lname = lname;
+    }
 }

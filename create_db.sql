@@ -66,11 +66,11 @@ CREATE TABLE Friend(
 CREATE TABLE Event(
     event_id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(512),
-    showtime_id BIGINT NOT NULL,
+    showtime_id BIGINT,
 
     CONSTRAINT fk_event_showtime_id
         FOREIGN KEY (showtime_id) REFERENCES Showtime(showtime_id)
-        ON DELETE CASCADE
+        ON DELETE NULL -- If the showtime is deleted, the event should not be deleted
         ON UPDATE RESTRICT
 );
 
@@ -101,11 +101,11 @@ CREATE TABLE Chat(
 );
 
 CREATE TABLE Message(
-    messsage_id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    message_id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     chat_id BIGINT NOT NULL,
     username VARCHAR(20) NOT NULL,
     message_text TEXT,
-    date_time DATETIME,
+    date_time DATETIME NOT NULL DEFAULT(GETDATE()),
 
     CONSTRAINT fk_message_chat_id
         FOREIGN KEY (chat_id) REFERENCES Chat(chat_id)
@@ -117,6 +117,8 @@ CREATE TABLE Message(
         ON UPDATE RESTRICT
 );
 
+-- Links Chats and Users together because a User can be in many Chats
+-- and a Chat can have many Users
 CREATE TABLE ChatParticipation(
     chat_participation_id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     chat_id BIGINT NOT NULL,
