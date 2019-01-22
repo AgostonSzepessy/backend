@@ -49,18 +49,95 @@
     }
   },
   "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "username": { "type": "string" },
+        "fname": { "type": "string" },
+        "lname": { "type": "string" },
+        "password": { "type": "string" },
+        "email": { "type": "string" }
+      }
+    },
+    "Friend": {
+      "type": "object",
+      "properties": {
+        "friend_id": { "type": "number" },
+        "u1_id": { "type": "number" },
+        "u2_id": { "type": "number" }
+      }
+    },
+    "Movie": {
+      "type": "object",
+      "properties": {
+        "movie_id": { "type": "number" },
+        "name": { "type": "string" },
+        "runtime": { "type": "number" },
+        "genre": { "type": "string" },
+        "parental_rating": { "type": "string" },
+        "poster_url": { "type": "string" },
+        "synopsis": { "type": "string" }
+      }
+    },
+    "Theater": {
+      "type": "object",
+      "properties": {
+        "theater_id": { "type": "number" },
+        "name": { "type": "string" },
+        "address": { "type": "string" },
+        "longitude": { "type": "number" },
+        "latitude": { "type": "number" }
+      }
+    },
+    "Showtime": {
+      "type": "object",
+      "properties": {
+        "showtime_id": { "type": "number" },
+        "theater_id": { "type": "number" },
+        "movie_id": { "type": "number" },
+        "date_time": { "type": "date" },
+        "cost": { "type": "number" }
+      }
+    },
     "Event": {
       "type": "object",
       "properties": {
-        "event_id": {
-          "type": "number"
-        },
-        "name": {
-          "type": "string"
-        },
-        "showtime_id": {
-          "type": "number"
-        }
+        "event_id": { "type": "number" },
+        "name": { "type": "string" },
+        "showtime_id": { "type": "number" }
+      }
+    },
+    "Participation": {
+      "type": "object",
+      "properties": {
+        "participation_id": { "type": "number" },
+        "event_id": { "type": "number" },
+        "username": { "type": "string" }
+      }
+    },
+    "Chat": {
+      "type": "object",
+      "properties": {
+        "chat_id": { "type": "number" },
+        "name": { "type": "string" },
+        "event_id": { "type": "number" }
+      }
+    },
+    "ChatParticipation": {
+      "type": "object",
+      "properties": {
+        "chat_participation_id": { "type": "number" },
+        "chat_id": { "type": "number" },
+        "username": { "type": "string" }
+      }
+    },
+    "Message": {
+      "type": "object",
+      "properties": {
+        "message_id": { "type": "number" },
+        "chat_id": { "type": "number" },
+        "username": { "type": "string" },
+        "message_text": { "type": "string" }
       }
     }
   }
