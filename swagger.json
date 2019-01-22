@@ -1,1 +1,67 @@
-{}
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Movnet API Documentation",
+    "description": "Documentation for the Movnet backend API"
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/event": {
+      "post": {
+        "description": "Creates a new event",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "showtime_id",
+            "type": "number",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully created event",
+            "schema": {
+              "$ref": "#/definitions/Event"
+            }
+          },
+          "400": {
+            "description": "Failed to create event, user input error"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Event": {
+      "type": "object",
+      "properties": {
+        "event_id": {
+          "type": "number"
+        },
+        "name": {
+          "type": "string"
+        },
+        "showtime_id": {
+          "type": "number"
+        }
+      }
+    }
+  }
+}
