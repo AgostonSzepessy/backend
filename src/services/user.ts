@@ -26,6 +26,42 @@ export class UserService {
     }
 
     /**
+     * Updates user's data
+     * @param username username of user
+     * @param email new email of user
+     * @param fname new first name of user
+     * @param lname new last name of user
+     */
+    public static async updateData(username: string, email: string, fname: string, lname: string) {
+        try {
+            const user = await User.updateUser(username, email, fname, lname);
+            return user;
+        } catch(err) {
+            throw new MovnetError(500, `Error updating ${username}`);
+        }
+    }
+
+    /**
+     * Updates the password of a user
+     * @param username username of user
+     * @param password current password of user
+     * @param newPassword new password for user
+     */
+    public static async updatePassword(username: string, password: string, newPassword: string) {
+        if(!await this.authenticate(username, password)) {
+            throw new MovnetError(401, 'Wrong password');
+        }
+
+        try {
+            const hashedPassword = await hasher.hash(newPassword);
+            return await User.updatePassword(username, hashedPassword);
+        } catch(err) {
+            logger.error(err);
+            throw new MovnetError(500, 'Error updating password');
+        }
+    }
+
+    /**
      * Finds a user by their username
      * @param username username for User to find
      */
@@ -49,6 +85,19 @@ export class UserService {
             return hasher.verify(user.password, password);
         } catch(err) {
             throw new MovnetError(500, 'Error with validation');
+        }
+    }
+
+    /**
+     * Deletes a user
+     * @param username username of user to delete
+     */
+    public static async delete(username: string) {
+        try {
+            await User.delete(username);
+        } catch(err) {
+            logger.error(err);
+            throw new MovnetError(500, 'Error during deletion');
         }
     }
 }
