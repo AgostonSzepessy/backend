@@ -15,36 +15,37 @@
   "produces": [
     "application/json"
   ],
+  "securityDefinitions": {
+    "ApiKeyAuth": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "x-access-token"
+    }
+  },
+  "security": [
+    { "ApiKeyAuth": [] }
+  ],
   "paths": {
-    "public-api/register": {
+    "/public-api/register": {
       "post": {
         "description": "Register a new user",
         "produces": [ "application/json" ],
+        "security": [ ],
         "parameters": [
           {
-            "name": "username",
-            "type": "string",
-            "required": true
-          },
-          {
-            "name": "fname",
-            "type": "string",
-            "required": true
-          },
-          {
-            "name": "lname",
-            "type": "string",
-            "required": true
-          },
-          {
-            "name": "email",
-            "type": "string",
-            "required": true
-          },
-          {
-            "name": "password",
-            "type": "string",
-            "required": true
+            "in": "body",
+            "name": "registration details",
+            "schema": {
+              "type": "object",
+              "required": [ "username", "fname", "lname", "email", "password" ],
+              "properties": {
+                "username": { "type": "string" },
+                "fname": { "type": "string" },
+                "lname": { "type": "string" },
+                "email": { "type": "string" },
+                "password": { "type": "string" }
+              }
+            }
           }
         ],
         "responses": {
@@ -60,20 +61,23 @@
         }
       }
     },
-    "public-api/login": {
+    "/public-api/login": {
       "post": {
         "description": "Authenticate an existing user",
         "produces": [ "application/json" ],
+        "security": [ ],
         "parameters": [
           {
-            "name": "username",
-            "type": "string",
-            "required": true
-          },
-          {
-            "name": "password",
-            "type": "string",
-            "required": true
+            "in": "body",
+            "name": "credentials",
+            "schema": {
+              "type": "object",
+              "required": [ "username", "password" ],
+              "properties": {
+                "username": { "type": "string" },
+                "password": { "type": "string" }
+              }
+            }
           }
         ],
         "responses": {
@@ -89,20 +93,22 @@
         }
       }
     },
-    "api/chat": {
+    "/api/chat": {
       "post": {
         "description": "Create a new chat",
         "produces": [ "application/json" ],
         "parameters": [
           {
-            "name": "name",
-            "type": "string",
-            "required": true
-          },
-          {
-            "name": "event_id",
-            "type": "number",
-            "required": true
+            "in": "body",
+            "name": "chat",
+            "schema": {
+              "type": "object",
+              "required": [ "name", "event_id" ],
+              "properties": {
+                "name": { "type": "string" },
+                "event_id": { "type": "number" }
+              }
+            }
           }
         ],
         "responses": {
@@ -118,26 +124,23 @@
         }
       }
     },
-    "api/chat/{chat_id}": {
+    "/api/chat/{chat_id}": {
       "post": {
         "description": "Send a message to a chat",
         "produces": [ "application/json" ],
         "parameters": [
           {
-            "name": "chat_id",
-            "type": "string",
-            "in": "path",
-            "required": true
-          },
-          {
-            "name": "username",
-            "type": "string",
-            "required": true
-          },
-          {
-            "name": "message_text",
-            "type": "string",
-            "required": true
+            "in": "body",
+            "name": "message",
+            "schema": {
+              "type": "object",
+              "required": [ "chat_id", "username", "message_text" ],
+              "properties": {
+                "chat_id": { "type": "number" },
+                "username": { "type": "string" },
+                "message_text" : { "type": "string" }
+              }
+            }
           }
         ],
         "responses": {
@@ -153,20 +156,22 @@
         }
       }
     },
-    "api/event": {
+    "/api/event": {
       "post": {
         "description": "Create a new event",
         "produces": [ "application/json" ],
         "parameters": [
           {
-            "name": "name",
-            "type": "string",
-            "required": true
-          },
-          {
-            "name": "showtime_id",
-            "type": "number",
-            "required": true
+            "in": "body",
+            "name": "event",
+            "schema": {
+              "type": "object",
+              "required": [ "name", "showtime_id" ],
+              "properties": {
+                "name": { "type": "string" },
+                "showtime_id": { "type": "number" }
+              }
+            }
           }
         ],
         "responses": {
@@ -182,40 +187,26 @@
         }
       }
     },
-    "api/movie": {
+    "/api/movie": {
       "post": {
         "description": "Create a new movie",
         "produces": [ "application/json" ],
         "parameters": [
           {
-            "name": "name",
-            "type": "string",
-            "required": true
-          },
-          {
-            "name": "runtime",
-            "type": "number",
-            "required": true
-          },
-          {
-            "name": "genre",
-            "type": "string",
-            "required": true
-          },
-          {
-            "name": "parentalRating",
-            "type": "string",
-            "required": true
-          },
-          {
-            "name": "posterUrl",
-            "type": "string",
-            "required": true
-          },
-          {
-            "name": "synopsis",
-            "type": "string",
-            "required": true
+            "in": "body",
+            "name": "movie",
+            "schema": {
+              "type": "object",
+              "required": [ "name", "runtime", "genre", "parentalRating", "posterUrl", "synopsis" ],
+              "properties": {
+                "name": { "type": "string" },
+                "runtime": { "type": "number" },
+                "genre": { "type": "string" },
+                "parentalRating": { "type": "string" },
+                "posterUrl": { "type": "string" },
+                "synopsis": { "type": "string" }
+              }
+            }
           }
         ],
         "responses": {
@@ -231,30 +222,24 @@
         }
       }
     },
-    "api/theater": {
+    "/api/theater": {
       "post": {
         "description": "Create a new theater",
         "produces": [ "application/json" ],
         "parameters": [
           {
-            "name": "name",
-            "type": "string",
-            "required": true
-          },
-          {
-            "name": "address",
-            "type": "string",
-            "required": true
-          },
-          {
-            "name": "latitude",
-            "type": "number",
-            "required": false
-          },
-          {
-            "name": "longitude",
-            "type": "number",
-            "required": false
+            "in": "body",
+            "name": "chat",
+            "schema": {
+              "type": "object",
+              "required": [ "name", "address", "latitude", "longitude" ],
+              "properties": {
+                "name": { "type": "string" },
+                "address": { "type": "string" },
+                "latitude": { "type": "number" },
+                "longitude": { "type": "number" }
+              }
+            }
           }
         ],
         "responses": {
@@ -270,7 +255,7 @@
         }
       }
     },
-    "api/user": {
+    "/api/user": {
       "get": {
         "description": "Get user information",
         "produces": [ "application/json" ],

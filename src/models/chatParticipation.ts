@@ -9,12 +9,12 @@ export class ChatParticipation {
   /* tslint:disable:variable-name */
   public chat_participation_id!: number;
   public chat_id: number;
-  public username: number;
+  public username: string;
   /* tslint:enable:variable-name */
 
   constructor(chat_participation_id: number, chat_id: number, username: string) {
-      this.chat_participation_id = participation_id;
-      this.chat_id = event_id;
+      this.chat_participation_id = chat_participation_id;
+      this.chat_id = chat_id;
       this.username = username;
     }
 
@@ -32,5 +32,21 @@ export class ChatParticipation {
         const chat_participation_id = (await knex('ChatParticipation').insert(data).returning('chat_participation_id'))[0];
 
         return new ChatParticipation(chat_participation_id, chat_id, username);
+    }
+
+    /**
+    * Gets the chats that a user is part of
+    * @param username of the user to get chats for
+    */
+    public static async getChatsForUser(username: string){
+      return (await knex('ChatParticipation').select('*').where('username', username).innerJoin('Chat', 'ChatParticipation.chat_id', '=', 'Chat.chat_id'));
+    }
+
+    /**
+    * Get the users in the chat
+    * @param chat_id the id of the chat
+    */
+    public static async getUsersForChat(chat_id: number){
+      return (await knex('ChatParticipation').select('*').where('chat_id', chat_id).innerJoin('User', 'ChatParticipation.username', '=', 'User.username'));
     }
 }

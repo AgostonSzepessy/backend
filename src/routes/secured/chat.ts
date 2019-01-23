@@ -38,4 +38,39 @@ module.exports = (router: express.Router) => {
 
     return res.json(new ResponseValue(true, message));
   }));
+
+  /**
+  * Gets the chats a user is part of
+  */
+  router.get('/chat', asyncHandler(async (req: Request, res: Response) => {
+    const username = req.body.username;
+
+    const chats = await ChatService.getChatsForUser(username);
+
+    return res.json(new ResponseValue(true, chats));
+  }));
+
+  /**
+  * Gets the users in a chat
+  */
+  router.get('/chat/:chat_id', asyncHandler(async (req: Request, res: Response) => {
+    const chat_id = req.params.chat_id;
+
+    const users = await ChatService.getUsersForChat(chat_id);
+
+    return res.json(new ResponseValue(true, users));
+  }));
+
+  /**
+  * Gets the messages in a chat
+  */
+  router.get('/chat/:chat_id/messages', asyncHandler(async (req: Request, res: Response) => {
+    const chat_id = req.params.chat_id;
+    const start = req.query.start || 0;
+    const limit = req.query.limit || 50;
+
+    const messages = await ChatService.getMessages(chat_id, start, limit);
+
+    return res.json(new ResponseValue(true, messages));
+  }));
 };
