@@ -49,6 +49,49 @@ export class User {
         return new User(userData.username, userData.password, userData.email, userData.fname, userData.lname);
     }
 
+    /**
+     * Updates users' data, except for the password
+     * @param username username of user
+     * @param email email of user
+     * @param fname first name of user
+     * @param lname last name of user
+     */
+    public static async updateUser(username: string, email: string, fname: string, lname: string) {
+        const data = {
+            username,
+            fname,
+            email,
+            lname,
+        };
+
+        const password = await knex('User').update(data).where('User.username', '=', username).returning('password');
+
+        return new User(username, password, email, fname, lname);
+    }
+
+    /**
+     * Updates the password of a user
+     * @param username username of user
+     * @param newPassword new password for user
+     */
+    public static async updatePassword(username: string, newPassword: string) {
+        const data = {
+            password: newPassword,
+        };
+
+        const userData = await knex('User').update(data).where('User.username', '=', username).returning('*');
+
+        return new User(userData.username, userData.password, userData.email, userData.fname, userData.lname);
+    }
+
+    /**
+     * Deletes a user from the database
+     * @param username username of user to delete
+     */
+    public static async delete(username: string) {
+        await knex('User').where('username', '=', username).del();
+    }
+
     public password: string;
     public username: string;
     public email: string;
