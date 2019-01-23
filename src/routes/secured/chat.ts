@@ -4,6 +4,7 @@ import ResponseValue from '../../utils/ResponseValue';
 import { asyncHandler } from '../../middleware/async-handler';
 import { MovnetError } from '../../middleware/MovnetError';
 import { ChatService } from '../../services/chat';
+import { RequestWithUser } from '../../interfaces/requests';
 
 module.exports = (router: express.Router) => {
   /**
@@ -26,7 +27,7 @@ module.exports = (router: express.Router) => {
   * Creates a message and adds it to chat
   */
   router.post('/chat/:chat_id', asyncHandler(async (req: Request, res: Response) => {
-    const chat_id = req.body.chat_id;
+    const chat_id = req.params.chat_id;
     const username = req.body.username;
     const message_text = req.body.message_text;
 
@@ -42,12 +43,17 @@ module.exports = (router: express.Router) => {
   /**
   * Gets the chats a user is part of
   */
-  router.get('/chat', asyncHandler(async (req: Request, res: Response) => {
-    const username = req.body.username;
+  router.get('/chat', asyncHandler(async (req: RequestWithUser, res: Response) => {
+    if(req.user){
+      const username = req.user.username;
+      const chats = await ChatService.getChatsForUser(username);
 
-    const chats = await ChatService.getChatsForUser(username);
+      return res.json(new ResponseValue(true, chats));
+    }
+    else {
+      throw new MovnetError(422, 'No user you dingus');
+    }
 
-    return res.json(new ResponseValue(true, chats));
   }));
 
   /**
