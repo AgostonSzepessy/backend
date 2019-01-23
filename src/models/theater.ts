@@ -14,9 +14,10 @@ export class Theater {
   public latitude: number;
   /* tslint:enable:variable-name */
 
-  constructor(theater_id: number, name: string, longitude: number, latitude: number) {
+  constructor(theater_id: number, name: string, address: string, longitude: number, latitude: number) {
       this.theater_id = theater_id;
       this.name = name;
+      this.address = address;
       this.longitude = longitude;
       this.latitude = latitude;
     }
@@ -27,15 +28,16 @@ export class Theater {
      * @param longitude longitude of theater
      * @param latitude latitude of theater
      */
-    public static async add(name: string, longitude: number, latitude: string) {
+    public static async add(name: string, address: string, longitude: number, latitude: number) {
         const data = {
             name,
+            address,
             longitude,
             latitude,
         };
 
         const theater_id = (await knex('Theater').insert(data).returning('theater_id'))[0];
 
-        return new Theater(theater_id, name, longitude, latitude);
+        return new Theater(theater_id, name, address, longitude, latitude);
     }
 }
