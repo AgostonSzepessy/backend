@@ -16,12 +16,147 @@
     "application/json"
   ],
   "paths": {
-    "/event": {
+    "public-api/register": {
       "post": {
-        "description": "Creates a new event",
-        "produces": [
-          "application/json"
+        "description": "Register a new user",
+        "produces": [ "application/json" ],
+        "parameters": [
+          {
+            "name": "username",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "fname",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "lname",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "email",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "password",
+            "type": "string",
+            "required": true
+          }
         ],
+        "responses": {
+          "200": {
+            "description": "Successfully registered new user",
+            "schema": {
+              "$ref": "#/definitions/Register"
+            }
+          },
+          "422": {
+            "description": "Input error, all fields must be filled"
+          }
+        }
+      }
+    },
+    "public-api/login": {
+      "post": {
+        "description": "Authenticate an existing user",
+        "produces": [ "application/json" ],
+        "parameters": [
+          {
+            "name": "username",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "password",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully authenticated user. Token and user data are returned",
+            "schema": {
+              "$ref": "#/definitions/Login"
+            }
+          },
+          "401": {
+            "description": "Input error, invalid username or password"
+          }
+        }
+      }
+    },
+    "api/chat": {
+      "post": {
+        "description": "Create a new chat",
+        "produces": [ "application/json" ],
+        "parameters": [
+          {
+            "name": "name",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "event_id",
+            "type": "number",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully created new chat",
+            "schema": {
+              "$ref": "#/definitions/Chat"
+            }
+          },
+          "422": {
+            "description": "Input error, all fields must be filled"
+          }
+        }
+      }
+    },
+    "api/chat/{chat_id}": {
+      "post": {
+        "description": "Send a message to a chat",
+        "produces": [ "application/json" ],
+        "parameters": [
+          {
+            "name": "chat_id",
+            "type": "string",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "username",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "message_text",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully sent message",
+            "schema": {
+              "$ref": "#/definitions/Message"
+            }
+          },
+          "422": {
+            "description": "Input error, all fields must be filled"
+          }
+        }
+      }
+    },
+    "api/event": {
+      "post": {
+        "description": "Create a new event",
+        "produces": [ "application/json" ],
         "parameters": [
           {
             "name": "name",
@@ -46,6 +181,112 @@
           }
         }
       }
+    },
+    "api/movie": {
+      "post": {
+        "description": "Create a new movie",
+        "produces": [ "application/json" ],
+        "parameters": [
+          {
+            "name": "name",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "runtime",
+            "type": "number",
+            "required": true
+          },
+          {
+            "name": "genre",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "parentalRating",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "posterUrl",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "synopsis",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully created the movie",
+            "schema": {
+              "$ref": "#/definitions/Movie"
+            }
+          },
+          "422": {
+            "description": "Input error, all fields must be filled"
+          }
+        }
+      }
+    },
+    "api/theater": {
+      "post": {
+        "description": "Create a new theater",
+        "produces": [ "application/json" ],
+        "parameters": [
+          {
+            "name": "name",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "address",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "latitude",
+            "type": "number",
+            "required": false
+          },
+          {
+            "name": "longitude",
+            "type": "number",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully created movie",
+            "schema": {
+              "$ref": "#/definitions/Theater"
+            }
+          },
+          "422": {
+            "description": "Input error, 'name' & 'address' must be filled"
+          }
+        }
+      }
+    },
+    "api/user": {
+      "get": {
+        "description": "Get user information",
+        "produces": [ "application/json" ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved the user",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "500": {
+            "description": "Server error, could not find user data"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -55,7 +296,6 @@
         "username": { "type": "string" },
         "fname": { "type": "string" },
         "lname": { "type": "string" },
-        "password": { "type": "string" },
         "email": { "type": "string" }
       }
     },
@@ -138,6 +378,23 @@
         "chat_id": { "type": "number" },
         "username": { "type": "string" },
         "message_text": { "type": "string" }
+      }
+    },
+    "Register": {
+      "type": "object",
+      "properties": {
+        "sucess": { "type": "boolean" },
+        "message": { "type": "string" }
+      }
+    },
+    "Login": {
+      "type": "object",
+      "properties": {
+        "message": { "type": "string" },
+        "token": { "type": "string" },
+        "user": {
+          "$ref": "#/definitions/User"
+        }
       }
     }
   }
