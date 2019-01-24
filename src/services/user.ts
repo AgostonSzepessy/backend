@@ -21,6 +21,7 @@ export class UserService {
             const user = await User.register(username, fname, lname, email, hashedPassword);
             return user.username;
         } catch(err) {
+            logger.info(err);
             throw new MovnetError(500, `Error registering ${username}`);
         }
     }

@@ -9,6 +9,10 @@ import { User } from '../../models/user';
 import { UserService } from '../../services/user';
 import { logger } from '../../utils/logger';
 
+/**
+ * Returns the user's data with the password removed
+ * @param user user to get data from
+ */
 function userData(user: User) {
     const { password, ... usr } = user;
 
