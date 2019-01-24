@@ -41,11 +41,11 @@ export class Chat {
     }
 
     /**
-    * Creates message and adds to chat
-    * @param chat_id id of the chat
-    * @param username of the sender
-    * @param message_text body of the message
-    */
+     * Creates message and adds to chat
+     * @param chat_id id of the chat
+     * @param username of the sender
+     * @param message_text body of the message
+     */
     public static async addMessage(chat_id: number, username: string, message_text: string): Promise<number> {
       const message = {
         chat_id,

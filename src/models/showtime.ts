@@ -4,23 +4,6 @@ import { knex } from '../utils/knex';
  * Models the Showtime Schema
  */
 export class Showtime {
-  // Variable names should match up with database column
-  // names so this rule needs disabled
-  /* tslint:disable:variable-name */
-  public showtime_id!: number;
-  public theater_id: number;
-  public movie_id: number;
-  public date_time: date;
-  public cost: number;
-  /* tslint:enable:variable-name */
-
-  constructor(showtime_id: number, theater_id: number, movie_id: number, date_time: date, cost: number) {
-    this.showtime_id = showtime_id;
-    this.theater_id = theater_id;
-    this.movie_id = movie_id;
-    this.date_time = date_time;
-    this.cost = cost;
-  }
 
     /**
      * Adds a new theater to the database
@@ -42,5 +25,21 @@ export class Showtime {
         return new Showtime(showtime_id, theater_id, movie_id, date_time, cost);
     }
 
+    // Variable names should match up with database column
+    // names so this rule needs disabled
+    /* tslint:disable:variable-name */
+    public showtime_id!: number;
+    public theater_id: number;
+    public movie_id: number;
+    public date_time: date;
+    public cost: number;
+    /* tslint:enable:variable-name */
 
+    constructor(showtime_id: number, theater_id: number, movie_id: number, date_time: date, cost: number) {
+      this.showtime_id = showtime_id;
+      this.theater_id = theater_id;
+      this.movie_id = movie_id;
+      this.date_time = date_time;
+      this.cost = cost;
+    }
 }

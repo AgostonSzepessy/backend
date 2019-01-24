@@ -12,18 +12,18 @@ export class EventService {
     }
 
     /**
-    * Gets a user's events
-    * @param username
-    */
-    public static async getEventsForUser(username: string){
+     * Gets a user's events
+     * @param username
+     */
+    public static async getEventsForUser(username: string) {
       return Participation.getEventsForUser(username);
     }
 
     /**
-    * Get's an event's participants
-    * @param event_id
-    */
-    public static async getUsersForEvent(event_id: number){
+     * Get's an event's participants
+     * @param event_id
+     */
+    public static async getUsersForEvent(event_id: number) {
       return Participation.getUsersForEvent(event_id);
     }
 }

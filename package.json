@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "tsc": "tsc",
-    "dev": "cross-env LOGGING_LEVEL=debug ./node_modules/nodemon/bin/nodemon.js"
+    "dev": "cross-env LOGGING_LEVEL=debug ./node_modules/nodemon/bin/nodemon.js",
+    "lint": "tslint src/**/*.ts"
   },
   "keywords": [],
   "author": "",

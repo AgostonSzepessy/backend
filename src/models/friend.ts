@@ -4,19 +4,6 @@ import { knex } from '../utils/knex';
  * Models the Friend Schema
  */
 export class Friend {
-  // Variable names should match up with database column
-  // names so this rule needs disabled
-  /* tslint:disable:variable-name */
-  public friend_id!: number;
-  public u1_id: string;
-  public u2_id: string;
-  /* tslint:enable:variable-name */
-
-  constructor(friend_id: number, u1_id: string, u2_id: string) {
-      this.participation_id = participation_id;
-      this.u1_id = u1_id;
-      this.u2_id = u2_id;
-    }
 
     /**
      * Adds a new theater to the database
@@ -32,5 +19,19 @@ export class Friend {
         const friend_id = (await knex('Friend').insert(data).returning('friend_id'))[0];
 
         return new Friend(friend_id, u1_id, u2_id);
+    }
+
+    // Variable names should match up with database column
+    // names so this rule needs disabled
+    /* tslint:disable:variable-name */
+    public friend_id!: number;
+    public u1_id: string;
+    public u2_id: string;
+    /* tslint:enable:variable-name */
+
+    constructor(friend_id: number, u1_id: string, u2_id: string) {
+      this.participation_id = participation_id;
+      this.u1_id = u1_id;
+      this.u2_id = u2_id;
     }
 }
