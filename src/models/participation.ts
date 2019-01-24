@@ -9,7 +9,7 @@ export class Participation {
   /* tslint:disable:variable-name */
   public participation_id!: number;
   public event_id: number;
-  public username: number;
+  public username: string;
   /* tslint:enable:variable-name */
 
   constructor(participation_id: number, event_id: number, username: string) {
@@ -32,5 +32,20 @@ export class Participation {
         const participation_id = (await knex('Participation').insert(data).returning('participation_id'))[0];
 
         return new Participation(participation_id, event_id, username);
+    }
+
+    /**
+    * Gets the events for a user
+    * @param username
+    */
+    public static async getEventsForUser(username: string){
+      return (await knex('Participation').select('*').where('username', username).innerJoin('Event', 'Participation.event_id', '=', 'Event.event_id'));
+    }
+
+    /**
+    * Gets the users in an event
+    */
+    public static async getUsersForEvent(event_id: number){
+      return (await knex('Participation').select('*').where('event_id', event_id).innerJoin('User', 'Participation.username', '=', 'User.username'));
     }
 }

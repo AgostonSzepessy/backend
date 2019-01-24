@@ -25,9 +25,36 @@
   "security": [
     { "ApiKeyAuth": [] }
   ],
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "Registering and logging in. Publicly available endpoints"
+    },
+    {
+      "name": "Chat",
+      "description": "Chats, Messaging, Chat Participants"
+    },
+    {
+      "name": "Event",
+      "description": "Events, Participants, User's Events"
+    },
+    {
+      "name": "Movie",
+      "description": "Saving and getting movies"
+    },
+    {
+      "name": "Theater",
+      "description": "Saving and getting theaters"
+    },
+    {
+      "name": "User",
+      "description": "<description>"
+    }
+  ],
   "paths": {
     "/public-api/register": {
       "post": {
+        "tags": [ "Authentication" ],
         "description": "Register a new user",
         "produces": [ "application/json" ],
         "security": [ ],
@@ -63,6 +90,7 @@
     },
     "/public-api/login": {
       "post": {
+        "tags": [ "Authentication" ],
         "description": "Authenticate an existing user",
         "produces": [ "application/json" ],
         "security": [ ],
@@ -95,6 +123,7 @@
     },
     "/api/chat": {
       "post": {
+        "tags": [ "Chat" ],
         "description": "Create a new chat",
         "produces": [ "application/json" ],
         "parameters": [
@@ -124,6 +153,7 @@
         }
       },
       "get": {
+        "tags": [ "Chat" ],
         "description": "Gets the chats a user is part of",
         "produces": [ "application/json" ],
         "parameters": [ ],
@@ -142,6 +172,7 @@
     },
     "/api/chat/{chat_id}": {
       "post": {
+        "tags": [ "Chat" ],
         "description": "Send a message to a chat",
         "produces": [ "application/json" ],
         "parameters": [
@@ -177,6 +208,7 @@
         }
       },
       "get": {
+        "tags": [ "Chat" ],
         "description": "Gets the users in a chat",
         "produces": [ "application/json" ],
         "parameters": [
@@ -208,6 +240,7 @@
     },
     "/api/event": {
       "post": {
+        "tags": [ "Event" ],
         "description": "Create a new event",
         "produces": [ "application/json" ],
         "parameters": [
@@ -235,10 +268,54 @@
             "description": "Failed to create event, user input error"
           }
         }
+      },
+      "get": {
+        "tags": [ "Event" ],
+        "description": "Get the events for the logged in user",
+        "name": "events",
+        "parameters": [ ],
+        "responses": {
+          "200": {
+            "description": "Successfully fetched events for user",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Event"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/event/{event_id}": {
+      "get": {
+        "tags": [ "Event" ],
+        "description": "Get the users for the specified event",
+        "name": "participants",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "type": "number",
+            "required": "true"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully fetched participants for event",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/User"
+              }
+            }
+          }
+        }
       }
     },
     "/api/movie": {
       "post": {
+        "tags": [ "Movie" ],
         "description": "Create a new movie",
         "produces": [ "application/json" ],
         "parameters": [
@@ -274,6 +351,7 @@
     },
     "/api/theater": {
       "post": {
+        "tags": [ "Theater" ],
         "description": "Create a new theater",
         "produces": [ "application/json" ],
         "parameters": [
@@ -307,6 +385,7 @@
     },
     "/api/user": {
       "get": {
+        "tags": [ "User" ],
         "description": "Get user information",
         "produces": [ "application/json" ],
         "parameters": [],
