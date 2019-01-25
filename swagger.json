@@ -187,9 +187,8 @@
             "name": "message",
             "schema": {
               "type": "object",
-              "required": [ "username", "message_text" ],
+              "required": [ "message_text" ],
               "properties": {
-                "username": { "type": "string" },
                 "message_text" : { "type": "string" }
               }
             }

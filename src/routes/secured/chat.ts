@@ -26,14 +26,23 @@ module.exports = (router: express.Router) => {
   /**
   * Creates a message and adds it to chat
   */
-  router.post('/chat/:chat_id', asyncHandler(async (req: Request, res: Response) => {
+  router.post('/chat/:chat_id', asyncHandler(async (req: RequestWithUser, res: Response) => {
     const chat_id = req.params.chat_id;
-    const username = req.body.username;
     const message_text = req.body.message_text;
+
+    let username;
+    if(req.user){
+      username = req.user.username;
+    }
+    else {
+      throw new MovnetError(500, 'No user wut');
+    }
 
     if(!chat_id || !username || !message_text){
       throw new MovnetError(422, 'All fields must be filled out');
     }
+
+    // TODO enfore the user to be part of the chat
 
     const message = await ChatService.addMessage(chat_id, username, message_text);
 
@@ -51,7 +60,7 @@ module.exports = (router: express.Router) => {
       return res.json(new ResponseValue(true, chats));
     }
     else {
-      throw new MovnetError(422, 'No user you dingus');
+      throw new MovnetError(500, 'No user you dingus');
     }
 
   }));
@@ -74,6 +83,8 @@ module.exports = (router: express.Router) => {
     const chat_id = req.params.chat_id;
     const start = req.query.start || 0;
     const limit = req.query.limit || 50;
+
+    // TODO make sure the user is part of the chat
 
     const messages = await ChatService.getMessages(chat_id, start, limit);
 
