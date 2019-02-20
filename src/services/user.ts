@@ -46,8 +46,6 @@ export class UserService {
                 throw new MovnetError(500, `${username} not found`);
             }
 
-            logger.debug(`${username} ${password}`);
-
             return hasher.verify(user.password, password);
         } catch(err) {
             throw new MovnetError(500, 'Error with validation');
