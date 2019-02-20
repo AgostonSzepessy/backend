@@ -58,7 +58,7 @@ router.post('/login', asyncHandler(async (req, res) => {
                 username,
             };
             const token = jwt.sign(payload, Jwt.SECRET, {
-                expiresIn: '7d'
+                expiresIn: Jwt.DURATION,
             });
 
             const usr = await UserService.findByUsername(username);
