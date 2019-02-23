@@ -18,12 +18,14 @@ export function errorHandler(error: MovnetError, req: Request, res: Response, ne
 
     if(error.getDetails()) {
         res.status(error.getStatus()).json({
+            success: false,
             status: error.getStatus(),
             message: error.getMessage(),
             details: error.getDetails(),
         });
     } else {
         res.status(error.getStatus()).json({
+            success: false,
             status: error.getStatus(),
             message: error.getMessage(),
         });
