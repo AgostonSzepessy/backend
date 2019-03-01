@@ -15,13 +15,27 @@ export class UserService {
      */
     public static async register(username: string, fname: string, lname: string, email: string,
                                  password: string) {
+
         try {
+            if(await User.usernameTaken(username)) {
+                throw new MovnetError(422, `${username} is already taken`);
+            }
+
+            if(await User.emailTaken(email)) {
+                throw new MovnetError(422, `${email} is already being used`);
+            }
+
             const hashedPassword = await hasher.hash(password);
 
             const user = await User.register(username, fname, lname, email, hashedPassword);
             return user.username;
         } catch(err) {
             logger.info(err);
+
+            if(err instanceof MovnetError) {
+                throw new MovnetError(422, err.getMessage());
+            }
+
             throw new MovnetError(500, `Error registering ${username}`);
         }
     }

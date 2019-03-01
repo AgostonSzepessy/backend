@@ -85,6 +85,30 @@ export class User {
     }
 
     /**
+     * Checks if a username is taken
+     * @param username username of user
+     */
+    public static async usernameTaken(username: string) {
+        const result = await knex('User').select('username').where('username', username);
+
+        if(result.length <= 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static async emailTaken(email: string) {
+        const result = await knex('User').select('email').where('email', email);
+
+        if(result.length <= 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Deletes a user from the database
      * @param username username of user to delete
      */
