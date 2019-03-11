@@ -1,3 +1,6 @@
+// This must come before everything to setup environment variables
+require('dotenv').config();
+
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import express from 'express';

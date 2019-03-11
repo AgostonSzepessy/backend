@@ -1,6 +1,9 @@
+-- ****IMPORTANT********************************************************
+-- *********************************************************************
+-- * Must create a user called 'movnetuser' before running this script *
+-- *********************************************************************
+-- *********************************************************************
 CREATE DATABASE movnet;
-CREATE USER 'movnetuser' IDENTIFIED BY 'password';
-GRANT ALL ON movnet.* TO 'movnetuser'; -- Gives all privileges to movnetuser; in production this will need to be changed
 
 USE movnet;
 
@@ -70,7 +73,7 @@ CREATE TABLE Event(
 
     CONSTRAINT fk_event_showtime_id
         FOREIGN KEY (showtime_id) REFERENCES Showtime(showtime_id)
-        ON DELETE NULL -- If the showtime is deleted, the event should not be deleted
+        ON DELETE SET NULL -- If the showtime is deleted, the event should not be deleted
         ON UPDATE RESTRICT
 );
 
@@ -105,7 +108,7 @@ CREATE TABLE Message(
     chat_id BIGINT NOT NULL,
     username VARCHAR(20) NOT NULL,
     message_text TEXT,
-    date_time DATETIME NOT NULL DEFAULT(GETDATE()),
+    date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, -- can't call functions on default values, so need to use CURRENT_TIMESTAMP instead
 
     CONSTRAINT fk_message_chat_id
         FOREIGN KEY (chat_id) REFERENCES Chat(chat_id)
@@ -133,4 +136,7 @@ CREATE TABLE ChatParticipation(
         ON DELETE CASCADE
         ON UPDATE RESTRICT
 );
+
+-- Grant some privileges to movnetuser
+GRANT SELECT, INSERT, UPDATE, DELETE ON movnet.* TO 'movnetuser';
 
