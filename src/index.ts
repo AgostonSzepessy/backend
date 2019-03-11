@@ -10,6 +10,9 @@ import securedApi from './routes/secured-api';
 import { logger } from './utils/logger';
 import { errorHandler } from './middleware/error-handler';
 
+import SwaggerUiExpress from 'swagger-ui-express';
+import * as swaggerDocument from '../swagger.json';
+
 const PORT = process.env.PORT || 8080;
 
 const app = express();
@@ -28,6 +31,9 @@ app.get('/', (req, res) => {
 
 // Define all error handlers last
 app.use(errorHandler);
+
+// show API documentation
+app.use('/api-docs', SwaggerUiExpress.serve, SwaggerUiExpress.setup(swaggerDocument))
 
 app.listen(PORT, () => {
     logger.info(`Listening on ${PORT}`);

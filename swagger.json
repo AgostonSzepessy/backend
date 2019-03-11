@@ -1,0 +1,514 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Movnet API Documentation",
+    "description": "Documentation for the Movnet backend API"
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "ApiKeyAuth": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "x-access-token"
+    }
+  },
+  "security": [
+    { "ApiKeyAuth": [] }
+  ],
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "Registering and logging in. Publicly available endpoints"
+    },
+    {
+      "name": "Chat",
+      "description": "Chats, Messaging, Chat Participants"
+    },
+    {
+      "name": "Event",
+      "description": "Events, Participants, User's Events"
+    },
+    {
+      "name": "Movie",
+      "description": "Saving and getting movies"
+    },
+    {
+      "name": "Theater",
+      "description": "Saving and getting theaters"
+    },
+    {
+      "name": "User",
+      "description": "<description>"
+    }
+  ],
+  "paths": {
+    "/public-api/register": {
+      "post": {
+        "tags": [ "Authentication" ],
+        "description": "Register a new user",
+        "produces": [ "application/json" ],
+        "security": [ ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "registration details",
+            "schema": {
+              "type": "object",
+              "required": [ "username", "fname", "lname", "email", "password" ],
+              "properties": {
+                "username": { "type": "string" },
+                "fname": { "type": "string" },
+                "lname": { "type": "string" },
+                "email": { "type": "string" },
+                "password": { "type": "string" }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully registered new user",
+            "schema": {
+              "$ref": "#/definitions/Register"
+            }
+          },
+          "422": {
+            "description": "Input error, all fields must be filled"
+          }
+        }
+      }
+    },
+    "/public-api/login": {
+      "post": {
+        "tags": [ "Authentication" ],
+        "description": "Authenticate an existing user",
+        "produces": [ "application/json" ],
+        "security": [ ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "credentials",
+            "schema": {
+              "type": "object",
+              "required": [ "username", "password" ],
+              "properties": {
+                "username": { "type": "string" },
+                "password": { "type": "string" }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully authenticated user. Token and user data are returned",
+            "schema": {
+              "$ref": "#/definitions/Login"
+            }
+          },
+          "401": {
+            "description": "Input error, invalid username or password"
+          }
+        }
+      }
+    },
+    "/api/chat": {
+      "post": {
+        "tags": [ "Chat" ],
+        "description": "Create a new chat",
+        "produces": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "chat",
+            "schema": {
+              "type": "object",
+              "required": [ "name", "event_id" ],
+              "properties": {
+                "name": { "type": "string" },
+                "event_id": { "type": "number" }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully created new chat",
+            "schema": {
+              "$ref": "#/definitions/Chat"
+            }
+          },
+          "422": {
+            "description": "Input error, all fields must be filled"
+          }
+        }
+      },
+      "get": {
+        "tags": [ "Chat" ],
+        "description": "Gets the chats a user is part of",
+        "produces": [ "application/json" ],
+        "parameters": [ ],
+        "responses": {
+          "200": {
+            "description": "Successfully returned chats",
+            "schema": {
+              "type": "array",
+              "items": {
+                "schema": { "$ref": "#/definitions/Chat" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/chat/{chat_id}": {
+      "post": {
+        "tags": [ "Chat" ],
+        "description": "Send a message to a chat",
+        "produces": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "chat_id",
+            "type": "number",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "message",
+            "schema": {
+              "type": "object",
+              "required": [ "message_text" ],
+              "properties": {
+                "message_text" : { "type": "string" }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully sent message",
+            "schema": {
+              "$ref": "#/definitions/Message"
+            }
+          },
+          "422": {
+            "description": "Input error, all fields must be filled"
+          }
+        }
+      },
+      "get": {
+        "tags": [ "Chat" ],
+        "description": "Gets the users in a chat",
+        "produces": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "chat_id",
+            "type": "number",
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "start",
+            "type": "number",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "type": "number",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully"
+          }
+        }
+      }
+    },
+    "/api/event": {
+      "post": {
+        "tags": [ "Event" ],
+        "description": "Create a new event",
+        "produces": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "event",
+            "schema": {
+              "type": "object",
+              "required": [ "name", "showtime_id" ],
+              "properties": {
+                "name": { "type": "string" },
+                "showtime_id": { "type": "number" }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully created event",
+            "schema": {
+              "$ref": "#/definitions/Event"
+            }
+          },
+          "400": {
+            "description": "Failed to create event, user input error"
+          }
+        }
+      },
+      "get": {
+        "tags": [ "Event" ],
+        "description": "Get the events for the logged in user",
+        "name": "events",
+        "parameters": [ ],
+        "responses": {
+          "200": {
+            "description": "Successfully fetched events for user",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Event"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/event/{event_id}": {
+      "get": {
+        "tags": [ "Event" ],
+        "description": "Get the users for the specified event",
+        "name": "participants",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "type": "number",
+            "required": "true"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully fetched participants for event",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/User"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/movie": {
+      "post": {
+        "tags": [ "Movie" ],
+        "description": "Create a new movie",
+        "produces": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "movie",
+            "schema": {
+              "type": "object",
+              "required": [ "name", "runtime", "genre", "parentalRating", "posterUrl", "synopsis" ],
+              "properties": {
+                "name": { "type": "string" },
+                "runtime": { "type": "number" },
+                "genre": { "type": "string" },
+                "parentalRating": { "type": "string" },
+                "posterUrl": { "type": "string" },
+                "synopsis": { "type": "string" }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully created the movie",
+            "schema": {
+              "$ref": "#/definitions/Movie"
+            }
+          },
+          "422": {
+            "description": "Input error, all fields must be filled"
+          }
+        }
+      }
+    },
+    "/api/theater": {
+      "post": {
+        "tags": [ "Theater" ],
+        "description": "Create a new theater",
+        "produces": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "chat",
+            "schema": {
+              "type": "object",
+              "required": [ "name", "address", "latitude", "longitude" ],
+              "properties": {
+                "name": { "type": "string" },
+                "address": { "type": "string" },
+                "latitude": { "type": "number" },
+                "longitude": { "type": "number" }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully created movie",
+            "schema": {
+              "$ref": "#/definitions/Theater"
+            }
+          },
+          "422": {
+            "description": "Input error, 'name' & 'address' must be filled"
+          }
+        }
+      }
+    },
+    "/api/user": {
+      "get": {
+        "tags": [ "User" ],
+        "description": "Get user information",
+        "produces": [ "application/json" ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved the user",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "500": {
+            "description": "Server error, could not find user data"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "username": { "type": "string" },
+        "fname": { "type": "string" },
+        "lname": { "type": "string" },
+        "email": { "type": "string" }
+      }
+    },
+    "Friend": {
+      "type": "object",
+      "properties": {
+        "friend_id": { "type": "number" },
+        "u1_id": { "type": "number" },
+        "u2_id": { "type": "number" }
+      }
+    },
+    "Movie": {
+      "type": "object",
+      "properties": {
+        "movie_id": { "type": "number" },
+        "name": { "type": "string" },
+        "runtime": { "type": "number" },
+        "genre": { "type": "string" },
+        "parental_rating": { "type": "string" },
+        "poster_url": { "type": "string" },
+        "synopsis": { "type": "string" }
+      }
+    },
+    "Theater": {
+      "type": "object",
+      "properties": {
+        "theater_id": { "type": "number" },
+        "name": { "type": "string" },
+        "address": { "type": "string" },
+        "longitude": { "type": "number" },
+        "latitude": { "type": "number" }
+      }
+    },
+    "Showtime": {
+      "type": "object",
+      "properties": {
+        "showtime_id": { "type": "number" },
+        "theater_id": { "type": "number" },
+        "movie_id": { "type": "number" },
+        "date_time": { "type": "date" },
+        "cost": { "type": "number" }
+      }
+    },
+    "Event": {
+      "type": "object",
+      "properties": {
+        "event_id": { "type": "number" },
+        "name": { "type": "string" },
+        "showtime_id": { "type": "number" }
+      }
+    },
+    "Participation": {
+      "type": "object",
+      "properties": {
+        "participation_id": { "type": "number" },
+        "event_id": { "type": "number" },
+        "username": { "type": "string" }
+      }
+    },
+    "Chat": {
+      "type": "object",
+      "properties": {
+        "chat_id": { "type": "number" },
+        "name": { "type": "string" },
+        "event_id": { "type": "number" }
+      }
+    },
+    "ChatParticipation": {
+      "type": "object",
+      "properties": {
+        "chat_participation_id": { "type": "number" },
+        "chat_id": { "type": "number" },
+        "username": { "type": "string" }
+      }
+    },
+    "Message": {
+      "type": "object",
+      "properties": {
+        "message_id": { "type": "number" },
+        "chat_id": { "type": "number" },
+        "username": { "type": "string" },
+        "message_text": { "type": "string" }
+      }
+    },
+    "Register": {
+      "type": "object",
+      "properties": {
+        "sucess": { "type": "boolean" },
+        "message": { "type": "string" }
+      }
+    },
+    "Login": {
+      "type": "object",
+      "properties": {
+        "message": { "type": "string" },
+        "token": { "type": "string" },
+        "user": {
+          "$ref": "#/definitions/User"
+        }
+      }
+    }
+  }
+}
