@@ -25,6 +25,20 @@ export class Showtime {
         return new Showtime(showtime_id, theater_id, movie_id, date_time, cost);
     }
 
+    public static async search(theater_id: number, movie_id: number, date_time: Date){
+      return await knex('Showtime').where(function(){
+        if(theater_id){
+          this.where('theater_id', theater_id);
+        }
+        if(movie_id){
+          this.where('movie_id', movie_id);
+        }
+        if(date_time){
+          this.whereBetween('date_time', [ date_time.setHours(0,0,0), date_time.setHours(23, 59, 59) ]);
+        }
+      });
+    }
+
     // Variable names should match up with database column
     // names so this rule needs disabled
     /* tslint:disable:variable-name */

@@ -23,6 +23,14 @@ export class Theater {
         return new Theater(theater_id, name, address, longitude, latitude);
     }
 
+    public static async all(){
+      return await knex('Theater').select();
+    }
+
+    public static async search(city: string){
+      return await knex('Theater').where('address', 'like', `%${city}%`);
+    }
+
     // Variable names should match up with database column
     // names so this rule needs disabled
     /* tslint:disable:variable-name */

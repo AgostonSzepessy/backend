@@ -25,4 +25,16 @@ module.exports = (router: express.Router) => {
 
         res.json(new ResponseValue(true, movie));
     }));
+
+    /**
+    * searches movies
+    */
+    router.get('/movie', asyncHandler(async (req: Request, res: Response) => {
+      const genre = req.query.genre || '';
+      const name = req.query.name || '';
+
+      const movies = await MovieService.search(genre, name);
+
+      res.json(new ResponseValue(true, movies));
+    }))
 };
