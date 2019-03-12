@@ -47,6 +47,10 @@
       "description": "Saving and getting theaters"
     },
     {
+      "name": "Showtime",
+      "description": "Saving and getting showtimes"
+    },
+    {
       "name": "User",
       "description": "<description>"
     }
@@ -346,6 +350,36 @@
             "description": "Input error, all fields must be filled"
           }
         }
+      },
+      "get": {
+        "tags": [ "Movie" ],
+        "description": "Searches movies in database. Note that searching by name is case sensitive, as is searching by genre. For example, some genres would be 'Action', 'Adventure', 'Fantasy', etc.",
+        "produces": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "genre",
+            "type": "string",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully performed search",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Movie"
+              }
+            }
+          }
+        }
       }
     },
     "/api/theater": {
@@ -380,6 +414,78 @@
             "description": "Input error, 'name' & 'address' must be filled"
           }
         }
+      },
+      "get": {
+        "tags": [ "Theater" ],
+        "description": "Searches Theaters in the database. If city is given, will search for Theaters in that city. If no city is given, then all theaters will be returned.",
+        "produces": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "city",
+            "type": "string",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully performed search",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Theater"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/showtime": {
+      "post": {
+        "tags": [ "Showtime" ],
+        "description": "Create a new showtime",
+        "produces": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "showtime",
+            "schema": {
+              "type": "object",
+              "required": [ "theater_id", "movie_id", "date_time", "cost" ],
+              "properties": {
+                "theater_id": { "type": "number" },
+                "movie_id": { "type": "number" },
+                "date_time": { "type": "date" },
+                "cost": { "type": "number" }
+              }
+            }
+          }
+        ]
+      },
+      "get": {
+        "tags": [ "Showtime" ],
+        "description": "Search showtimes in database",
+        "produces": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "theater_id",
+            "type": "number",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "movie_id",
+            "type": "number",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "date_time",
+            "type": "Date",
+            "required": false
+          }
+        ]
       }
     },
     "/api/user": {

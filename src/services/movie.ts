@@ -14,4 +14,11 @@ export class MovieService {
                             poster_url: string, synopsis: string) {
         return Movie.add(name, runtime, genre, parental_rating, poster_url, synopsis);
     }
+
+    public static async search(genre: string, name: string){
+      if(!genre && !name){
+        return await Movie.all();
+      }
+      return await Movie.search(genre, name);
+    }
 }

@@ -30,6 +30,21 @@ export class Movie {
         return new Movie(movie_id, name, runtime, genre, parental_rating, poster_url, synopsis);
     }
 
+    public static async all(){
+      return await knex('Movie').select();
+    }
+
+    public static async search(genre: string, name: string) {
+      return await knex('Movie').where(function(){
+        if(genre){
+          this.where('genre', 'like', `%${genre}%`);
+        }
+        if(name){
+          this.where('name', 'like', `%${name}%`);
+        }
+      });
+    }
+
     // Variable names should match up with database column
     // names so this rule needs disabled
     /* tslint:disable:variable-name */

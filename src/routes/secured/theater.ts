@@ -7,7 +7,7 @@ import { TheaterService } from '../../services/theater';
 
 module.exports = (router: express.Router) => {
   /**
-  * Adds a new chat
+  * Adds a new theater
   */
   router.post('/theater', asyncHandler(async (req: Request, res: Response) => {
     const name = req.body.name;
@@ -22,5 +22,16 @@ module.exports = (router: express.Router) => {
     const theater = await TheaterService.add(name, address, longitude, latitude);
 
     return res.json(new ResponseValue(true, theater));
+  }));
+
+  /**
+  * Searches for theaters
+  */
+  router.get('/theater', asyncHandler(async (req: Request, res: Response) => {
+    const city = req.query.city || '';
+
+    const theaters = await TheaterService.search(city);
+
+    return res.json(new ResponseValue(true, theaters));
   }));
 };
