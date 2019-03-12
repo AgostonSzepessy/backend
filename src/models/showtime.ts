@@ -12,7 +12,7 @@ export class Showtime {
      * @param date_time date and time of showtime
      * @param cost cost of the showtime
      */
-    public static async add(theater_id: number, movie_id: number, date_time: date, cost: number) {
+    public static async add(theater_id: number, movie_id: number, date_time: Date, cost: number) {
         const data = {
             theater_id,
             movie_id,
@@ -31,11 +31,11 @@ export class Showtime {
     public showtime_id!: number;
     public theater_id: number;
     public movie_id: number;
-    public date_time: date;
+    public date_time: Date;
     public cost: number;
     /* tslint:enable:variable-name */
 
-    constructor(showtime_id: number, theater_id: number, movie_id: number, date_time: date, cost: number) {
+    constructor(showtime_id: number, theater_id: number, movie_id: number, date_time: Date, cost: number) {
       this.showtime_id = showtime_id;
       this.theater_id = theater_id;
       this.movie_id = movie_id;
