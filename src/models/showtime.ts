@@ -34,7 +34,11 @@ export class Showtime {
           this.where('movie_id', movie_id);
         }
         if(date_time){
-          this.whereBetween('date_time', [ date_time.setHours(0,0,0), date_time.setHours(23, 59, 59) ]);
+          date_time = new Date(date_time);
+          let startDate = new Date(date_time.setHours(0,0,0));
+          let endDate = new Date(date_time.setHours(23,59,59));
+          console.log(startDate, endDate);
+          this.whereBetween('date_time', [ startDate, endDate ]);
         }
       });
     }
