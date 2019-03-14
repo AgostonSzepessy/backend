@@ -1,4 +1,4 @@
-import express, { Response } from 'express';
+import express, { Request, Response } from 'express';
 import EmailValidator from 'email-validator';
 
 import ResponseValue from '../../utils/ResponseValue';
@@ -29,6 +29,21 @@ module.exports = (router: express.Router) => {
         }
 
         res.status(200).json(new ResponseValue(true, userData(req.user)));
+    }));
+
+    /**
+    * Searches for user
+    */
+    router.get('/user/search', asyncHandler(async (req: Request, res: Response) => {
+      let query = req.query.query;
+
+      if(!query){
+        throw new MovnetError(400, 'query required');
+      }
+
+      let users = await UserService.search(query);
+
+      res.json(new ResponseValue(true, users));
     }));
 
     /**
