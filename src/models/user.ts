@@ -50,7 +50,7 @@ export class User {
     }
 
     public static async search(username: string){
-      return await knex('User').select('fname', 'username').where('username', 'like', `%${username}%`);
+      return await knex('User').select('fname', 'lname', 'username').where('username', 'like', `%${username}%`);
     }
 
     /**
