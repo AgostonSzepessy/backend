@@ -31,7 +31,7 @@ export class Movie {
     }
 
     public static async all(){
-      return await knex('Movie').select();
+      return await knex('Movie').select().orderBy('name', 'asc');
     }
 
     public static async search(genre: string, name: string) {
@@ -42,7 +42,7 @@ export class Movie {
         if(name){
           this.where('name', 'like', `%${name}%`);
         }
-      });
+      }).orderBy('name', 'asc');
     }
 
     // Variable names should match up with database column
