@@ -37,10 +37,9 @@ export class Showtime {
           date_time = new Date(date_time);
           let startDate = new Date(date_time.setHours(0,0,0));
           let endDate = new Date(date_time.setHours(23,59,59));
-          console.log(startDate, endDate);
           this.whereBetween('date_time', [ startDate, endDate ]);
         }
-      });
+      }).orderBy('date_time', 'desc');
     }
 
     // Variable names should match up with database column

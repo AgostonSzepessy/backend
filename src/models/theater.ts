@@ -24,11 +24,11 @@ export class Theater {
     }
 
     public static async all(){
-      return await knex('Theater').select();
+      return await knex('Theater').select().orderBy('name', 'asc');
     }
 
     public static async search(city: string){
-      return await knex('Theater').where('address', 'like', `%${city}%`);
+      return await knex('Theater').where('address', 'like', `%${city}%`).orderBy('name', 'asc');
     }
 
     // Variable names should match up with database column
