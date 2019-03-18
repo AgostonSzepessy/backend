@@ -1,5 +1,6 @@
 import { Friend } from '../models/friend';
 import { MovnetError } from '../middleware/MovnetError';
+import { User } from '../models/user';
 
 export class FriendService {
     /**
@@ -16,6 +17,11 @@ export class FriendService {
      * @param u2Username username of user receiving friend request
      */
     public static async addFriend(u1Username: string, u2Username: string) {
+        // Make sure user exists
+        if(!(await User.usernameTaken(u2Username))) {
+            throw new MovnetError(404, 'User receiving friend request does not exist');
+        }
+
         if(await Friend.isFriend(u1Username, u2Username)) {
             throw new MovnetError(400, 'Users are already friends');
         }

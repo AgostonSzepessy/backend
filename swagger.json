@@ -53,6 +53,10 @@
     {
       "name": "User",
       "description": "<description>"
+    },
+    {
+      "name": "Friend",
+      "description": "Friend operations"
     }
   ],
   "paths": {
@@ -534,6 +538,106 @@
           }
         }
       }
+    },
+    "/api/friend": {
+      "get": {
+        "tags": ["Friend"],
+        "description": "Get all confirmed and unconfirmed friends of the current user",
+        "produces": ["application/json"],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved user's confirmed and unconfirmed friends",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "confirmed": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Friend"
+                  }
+                },
+                "unconfirmed": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Friend"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Friend"],
+        "description": "Add new friend to current user",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "username",
+            "schema": {
+              "type": "object",
+              "required": ["username"],
+              "properties": {
+                "username": { "type": "string" }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully added friend",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "friend_id": { "type": "number" },
+                "u1_id": { "type": "string" },
+                "u2_id": { "type": "string" },
+                "u2_confirmed": { "type": "boolean" }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Friend"],
+        "description": "Deletes a friend",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "friendId",
+            "schema": {
+              "type": "object",
+              "required": ["friendId"],
+              "properties": {
+                "friendId": { "type": "number" }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "/api/friend/confirm": {
+      "post": {
+        "tags": ["Friend"],
+        "description": "Confirms a friend",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "friendId",
+            "schema": {
+              "type": "object",
+              "required": ["friendId"],
+              "properties": {
+                "friendId": { "type": "number" }
+              }
+            }
+          }
+        ]
+      }
     }
   },
   "definitions": {
@@ -550,8 +654,9 @@
       "type": "object",
       "properties": {
         "friend_id": { "type": "number" },
-        "u1_id": { "type": "number" },
-        "u2_id": { "type": "number" }
+        "username": { "type": "string" },
+        "fname": { "type": "string" },
+        "lname": { "type": "string" }
       }
     },
     "Movie": {
