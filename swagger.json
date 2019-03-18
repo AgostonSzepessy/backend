@@ -527,7 +527,8 @@
               "type": "object",
               "properties": {
                 "username": { "type": "string" },
-                "fname": { "type": "string" }
+                "fname": { "type": "string" },
+                "lname": { "type": "string" }
               }
             }
           }
