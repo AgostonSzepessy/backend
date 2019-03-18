@@ -18,7 +18,7 @@ export class FriendService {
      */
     public static async addFriend(u1Username: string, u2Username: string) {
         // Make sure user exists
-        if(!(await User.usernameTaken(u2Username)) {
+        if(!(await User.usernameTaken(u2Username))) {
             throw new MovnetError(404, 'User receiving friend request does not exist');
         }
 
