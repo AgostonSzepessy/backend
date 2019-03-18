@@ -21,7 +21,9 @@ export class ShowtimeService {
         // get the date_time as a string (this is easiest way...)
         let date_time = (new Date(JSON.stringify(showtime.date_time).replace(/\"/g, '')));
         let date = date_time.toString().split(' ').slice(0,4).join(' ');
-        let time = date_time.toLocaleTimeString('en-US').split(' ').map((str, index) => index>0 ? str : str.slice(0,4)).join(' ');
+        const timeRegex = /\d+:\d+/; // matches time formats of HH:MM, where the first H could be missing
+        let time = date_time.toLocaleTimeString('en-US').split(' ').map(
+          (str, index) => index>0 ? str : timeRegex.exec(str)![0]).join(' ');
         showtime.date = date;
         showtime.time = time;
         showtime.date_time = date_time.toString();
