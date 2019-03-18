@@ -49,6 +49,10 @@ export class User {
         return new User(userData.username, userData.password, userData.email, userData.fname, userData.lname);
     }
 
+    public static async search(username: string){
+      return await knex('User').select('fname', 'lname', 'username').where('username', 'like', `%${username}%`);
+    }
+
     /**
      * Updates users' data, except for the password
      * @param username username of user

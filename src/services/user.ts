@@ -84,6 +84,10 @@ export class UserService {
         return User.findByUsername(username);
     }
 
+    public static async search(username: string){
+      return User.search(username);
+    }
+
     /**
      * Checks if the user submitted the right credentials
      * @param username username for User
