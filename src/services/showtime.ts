@@ -19,11 +19,12 @@ export class ShowtimeService {
       // format the date and time for each showtime
       return showtimes.map((showtime:any) => {
         // get the date_time as a string (this is easiest way...)
-        let date_time = JSON.stringify(showtime.date_time).replace(/\"/g, '');
-        // first half is always date
-        showtime.date = date_time.split('T')[0];
-        // second half is always time + time zone signifier (Z means UTC), so remove it
-        showtime.time = date_time.split('T')[1].replace('Z', '');
+        let date_time = (new Date(JSON.stringify(showtime.date_time).replace(/\"/g, '')));
+        let date = date_time.toString().split(' ').slice(0,4).join(' ');
+        let time = date_time.toLocaleTimeString('en-US').split(' ').map((str, index) => index>0 ? str : str.slice(0,4)).join(' ');
+        showtime.date = date;
+        showtime.time = time;
+        showtime.date_time = date_time.toString();
         return showtime;
       });
     }
