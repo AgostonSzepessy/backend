@@ -1,7 +1,5 @@
 import { Event } from '../models/event';
 import { Participation } from '../models/participation';
-import { User } from '../models/user';
-import { Friend } from '../models/friend';
 
 export class EventService {
     /**
@@ -25,23 +23,7 @@ export class EventService {
      * Get's an event's participants
      * @param event_id
      */
-    public static async getUsersForEvent(event_id: number): Promise<User[]> {
+    public static async getUsersForEvent(event_id: number) {
       return Participation.getUsersForEvent(event_id);
-    }
-
-    public static async addUserstoEvent(event_id: number, username: string, usernames: string[]) {
-      // filter out non-friends in case
-      let { confirmed } = await Friend.getFriends(username);
-      // usernames = usernames.filter(uname => {
-      //   return confirmed.some(confirmedFriend => confirmedFriend.username == uname);
-      // });
-
-      // get rid of people already in event
-      let currentParticipants = await EventService.getUsersForEvent(event_id);
-      usernames = usernames.filter(uname => {
-        return !currentParticipants.some(participant => participant.username == uname);
-      });
-
-      return Participation.addUserstoEvent(event_id, usernames);
     }
 }
