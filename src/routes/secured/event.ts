@@ -49,23 +49,4 @@ module.exports = (router: express.Router) => {
 
     return res.json(new ResponseValue(true, users));
   }));
-
-  /**
-  * Adds user to an event
-  */
-  router.post('/event/:event_id', asyncHandler(async (req: RequestWithUser, res: Response) => {
-    if(req.user){
-      const event_id = req.params.event_id; // event we're talking about
-      const username = req.user.username;
-      const usernames = req.body.usernames; // usernames of people wanting to add
-      // note: the users to add MUST be friends of the logged in user
-
-      const users = await EventService.addUserstoEvent(event_id, username, usernames);
-
-      return res.json(new ResponseValue(true, users));
-    }
-    else {
-      return res.json(new ResponseValue(false, 'no user da hek'));
-    }
-  }));
 };
