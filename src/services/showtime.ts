@@ -1,4 +1,5 @@
 import { Showtime } from '../models/showtime';
+import { logger } from '../utils/logger';
 
 export class ShowtimeService {
     /**
@@ -23,7 +24,19 @@ export class ShowtimeService {
         let date = date_time.toString().split(' ').slice(0,4).join(' ');
         const timeRegex = /\d+:\d+/; // matches time formats of HH:MM, where the first H could be missing
         let time = date_time.toLocaleTimeString('en-US').split(' ').map(
-          (str, index) => index>0 ? str : timeRegex.exec(str)![0]).join(' ');
+          (str, index) => {
+            if(index>0) {
+              return str;
+            } else {
+                const timeResult = timeRegex.exec(str);
+
+                if(timeResult) {
+                  return timeResult[0];
+                }
+
+                return 'Invalid';
+              }
+          }).join(' ');
         showtime.date = date;
         showtime.time = time;
         showtime.date_time = date_time.toString();
