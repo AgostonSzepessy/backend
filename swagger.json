@@ -318,6 +318,39 @@
             }
           }
         }
+      },
+      "post": {
+        "tags": [ "Event" ],
+        "description": "Adds the given list of users to the specified event. Will only add users who are confirmed friends of the user making the request. Will ignore users who are already part of event",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "type": "number",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "usernames",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully added users to event. Returns the participants of the event",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/User"
+              }
+            }
+          }
+        }
       }
     },
     "/api/movie": {

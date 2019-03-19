@@ -1,4 +1,5 @@
 import { knex } from '../utils/knex';
+import { User } from './user';
 
 /**
  * Models the Participation Schema
@@ -6,7 +7,7 @@ import { knex } from '../utils/knex';
 export class Participation {
 
     /**
-     * Adds a new theater to the database
+     * Adds a new user to an event
      * @param event_id id of event to participate of theater
      * @param username username of participant
      */
@@ -35,11 +36,20 @@ export class Participation {
     /**
      * Gets the users in an event
      */
-    public static async getUsersForEvent(event_id: number) {
+    public static async getUsersForEvent(event_id: number): Promise<User[]> {
       return knex('Participation')
         .select('*')
         .where('event_id', event_id)
         .innerJoin('User', 'Participation.username', '=', 'User.username');
+    }
+
+    public static async addUserstoEvent(event_id: number, usernames: string[]){
+      let result = [];
+      for(let username of usernames){
+        let data = await Participation.add(event_id, username);
+        result.push(data);
+      }
+      return result;
     }
 
     // Variable names should match up with database column
