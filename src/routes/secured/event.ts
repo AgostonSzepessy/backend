@@ -11,17 +11,23 @@ module.exports = (router: express.Router) => {
   /**
   * Adds a new event
   */
-  router.post('/event', asyncHandler(async (req: Request, res: Response) => {
-    const name = req.body.name;
-    const showtime_id = req.body.showtime_id;
+  router.post('/event', asyncHandler(async (req: RequestWithUser, res: Response) => {
+    if(req.user){
+    	const name = req.body.name;
+	const showtime_id = req.body.showtime_id;
+	const username = req.user.username;
 
-    if(!name || !showtime_id){
-      throw new MovnetError(400, 'All fields must e filled out');
+    	if(!name || !showtime_id){
+      	    throw new MovnetError(400, 'All fields must e filled out');
+    	}
+
+    	const event = await EventService.add(username, name, showtime_id);
+
+    	return res.json(new ResponseValue(true, event));
     }
-
-    const event = await EventService.add(name, showtime_id);
-
-    return res.json(new ResponseValue(true, event));
+    else {
+	return res.json(new ResponseValue(false, 'No user, WRONG!'));
+    }
   }));
 
   /**

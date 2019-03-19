@@ -3,6 +3,9 @@ import { Participation } from '../models/participation';
 import { Showtime } from '../models/showtime';
 import { Movie } from '../models/movie';
 import { Theater } from '../models/theater';
+import { ChatParticipation } from '../models/chatParticipation';
+import { User } from '../models/user';
+import { Friend } from '../models/friend';
 import { logger } from '../utils/logger';
 
 export class EventService {
@@ -11,8 +14,11 @@ export class EventService {
      * @param name name of event
      * @param showtime_id the showtime's id
      */
-    public static async add(name: string, showtime_id: number) {
-        return Event.add(name, showtime_id);
+    public static async add(username: string, name: string, showtime_id: number) {
+      let event = await Event.add(name, showtime_id);
+      Participation.addUserstoEvent(event.event_id, [ username ]);
+
+	    return event;
     }
 
     /**
@@ -58,4 +64,39 @@ export class EventService {
         theaterData,
       };
     }
+
+    /**
+     * Adds users to an event. Once they are added to the event, they are also
+     * added to the corresponding group chat for that event.
+     * @param event_id id of event to add users to
+     * @param username username of user that created the event
+     * @param usernames usernames of other users to add to event
+     */
+    public static async addUserstoEvent(event_id: number, username: string, usernames: string[]) {
+      // filter out users who aren't friends with the person who made the event
+      const { confirmed } = await Friend.getFriends(username);
+      usernames = usernames.filter((uname) => {
+         return confirmed.some((confirmedFriend) => confirmedFriend.username === uname);
+      });
+
+      // get rid of people already in event
+      const currentParticipants = await EventService.getUsersForEvent(event_id);
+      usernames = usernames.filter((uname) => {
+        return !currentParticipants.some((participant) => participant.username === uname);
+      });
+
+      const addedUsers = await Participation.addUserstoEvent(event_id, usernames);
+
+      // add the people to the chat too
+      const chats = await ChatParticipation.getChatsForUser(username);
+      const chat = chats.find((c) => c.event_id === event_id);
+
+      if(!chat) {
+        throw new Error('This shouldnt happend...?');
+      }
+
+      await ChatParticipation.addUserstoChat(chat.chat_id, usernames);
+
+      return addedUsers;
+  }
 }
