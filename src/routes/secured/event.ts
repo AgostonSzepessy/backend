@@ -5,6 +5,7 @@ import { asyncHandler } from '../../middleware/async-handler';
 import { MovnetError } from '../../middleware/MovnetError';
 import { EventService } from '../../services/event';
 import { RequestWithUser } from '../../interfaces/requests';
+import { Event } from '../../models/event';
 
 module.exports = (router: express.Router) => {
   /**
@@ -40,13 +41,17 @@ module.exports = (router: express.Router) => {
   }));
 
   /**
-  * Gets the users for an event
+  * Gets data about an event
   */
   router.get('/event/:event_id', asyncHandler(async (req: Request, res: Response) => {
     const event_id = req.params.event_id;
 
-    const users = await EventService.getUsersForEvent(event_id);
+    if(!event_id) {
+      throw new MovnetError(422, 'Event ID must be given');
+    }
 
-    return res.json(new ResponseValue(true, users));
+    const eventData = await EventService.getEventData(event_id);
+
+    return res.json(new ResponseValue(true, eventData));
   }));
 };

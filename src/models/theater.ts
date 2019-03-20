@@ -31,6 +31,10 @@ export class Theater {
       return await knex('Theater').where('address', 'like', `%${city}%`).orderBy('name', 'asc');
     }
 
+    public static async findById(theater_id: number) {
+      return (await knex('Theater').select('*').where('theater_id', theater_id))[0];
+    }
+
     // Variable names should match up with database column
     // names so this rule needs disabled
     /* tslint:disable:variable-name */
