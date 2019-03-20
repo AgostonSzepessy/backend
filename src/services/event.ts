@@ -7,6 +7,7 @@ import { ChatParticipation } from '../models/chatParticipation';
 import { User } from '../models/user';
 import { Friend } from '../models/friend';
 import { logger } from '../utils/logger';
+import { MovnetError } from '../middleware/MovnetError';
 
 export class EventService {
     /**
@@ -89,7 +90,13 @@ export class EventService {
 
       // add the people to the chat too
       const chats = await ChatParticipation.getChatsForUser(username);
-      const chat = chats.find((c) => c.event_id === event_id);
+      const chat = chats.find((c) => {
+        if(c.event_id == event_id) {
+          return true;
+        }
+
+        return false;
+      });
 
       if(!chat) {
         throw new Error('This shouldnt happend...?');
@@ -98,5 +105,30 @@ export class EventService {
       await ChatParticipation.addUserstoChat(chat.chat_id, usernames);
 
       return addedUsers;
-  }
+    }
+
+    /**
+     * Updates the name of an event
+     * @param event_id ID of event
+     * @param name new name of event
+     */
+    public static async updateName(event_id: number, name: string) {
+      return Event.updateName(event_id, name);
+    }
+
+    /**
+     * Deletes an event
+     * @param event_id ID of event to delete
+     * @param username username of person who is in the event
+     */
+    public static async deleteEvent(event_id: number, username: string) {
+      const participants = await Participation.getUsersForEvent(event_id);
+      const usernames = participants.map((p: any) => p.username);
+
+      if(usernames.includes(username)) {
+        return Event.deleteEvent(event_id);
+      } else {
+        throw new MovnetError(422, `${username} is not a member of this event`);
+      }
+    }
 }

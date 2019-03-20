@@ -30,6 +30,20 @@ export class Event {
     return data;
   }
 
+  public static async updateName(event_id: number, name: string) {
+    const data = (await knex('Event').update({ name }).where('event_id', event_id))[0];
+
+    return {
+      event_id,
+      name,
+      showtime_id: data.showtime_id,
+    };
+  }
+
+  public static async deleteEvent(event_id: number) {
+    return knex('Event').where('event_id', event_id).del();
+  }
+
   // Variable names should match up with database column
   // names so this rule needs disabled
   /* tslint:disable:variable-name */

@@ -61,4 +61,57 @@ module.exports = (router: express.Router) => {
 
     return res.json(new ResponseValue(true, eventData));
   }));
+
+  /**
+   * Updates an event's name and/or users
+   * @param event_id ID of event
+   * @param name (optional) new name of event
+   * @param friends (optional) usernames of friends to add to event
+   */
+  router.post('/event/:event_id', asyncHandler(async (req: RequestWithUser, res: Response) => {
+    if(req.user) {
+      const event_id = req.params.event_id;
+      const name = req.body.name || '';
+      const friends = req.body.friends || [];
+
+      const username = req.user.username;
+
+      if(!name && !friends) {
+        throw new MovnetError(422, 'Name or friends must be specified');
+      }
+
+      const result: any = { };
+
+      if(name) {
+        const eventData = await EventService.updateName(event_id, name);
+        result.eventData = eventData;
+      }
+
+      if(friends) {
+        const users = await EventService.addUserstoEvent(event_id, username, friends);
+        result.users = users;
+      }
+
+      res.json(new ResponseValue(true, result));
+    } else {
+      throw new MovnetError(422, 'No user da hek');
+    }
+  }));
+
+  /**
+   * Deletes an event
+   * @param event_id id of event to delete
+   */
+  router.delete('/event/:event_id', asyncHandler(async (req: RequestWithUser, res: Response) => {
+    if(!req.user) {
+      throw new MovnetError(422, 'User has bad token');
+    }
+
+    const event_id = req.params.event_id;
+    const username = req.user.username;
+
+    await EventService.deleteEvent(event_id, username);
+
+    res.json(new ResponseValue(true, `Deleted ${event_id}`));
+  }));
 };
