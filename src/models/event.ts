@@ -17,9 +17,9 @@ export class Event {
           showtime_id,
       };
 
-      const eventData = (await knex('Event').insert(data).returning('*'))[0];
+      const event_id = (await knex('Event').insert(data))[0];
 
-      const event = new Event(eventData.event_id, eventData.name, eventData.showtime_id);
+      const event = new Event(event_id, name, showtime_id);
 
       return event;
   }

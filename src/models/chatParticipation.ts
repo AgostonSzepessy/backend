@@ -1,4 +1,5 @@
 import { knex } from '../utils/knex';
+import { Chat } from './chat';
 
 /**
  * Models the ChatParticipation Schema
@@ -26,7 +27,7 @@ export class ChatParticipation {
      * Gets the chats that a user is part of
      * @param username of the user to get chats for
      */
-    public static async getChatsForUser(username: string) {
+    public static async getChatsForUser(username: string): Promise<any[]> {
       return knex('ChatParticipation')
         .select('*')
         .where('username', username)
@@ -42,6 +43,16 @@ export class ChatParticipation {
         .select('*')
         .where('chat_id', chat_id)
         .innerJoin('User', 'ChatParticipation.username', '=', 'User.username');
+    }
+
+    public static async addUserstoChat(chat_id: number, usernames: string[]){
+      let result = [];
+      for(let username of usernames){
+        let data = await ChatParticipation.add(chat_id, username);
+        result.push(data);
+      }
+
+      return result;
     }
 
     // Variable names should match up with database column

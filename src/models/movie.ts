@@ -30,12 +30,12 @@ export class Movie {
         return new Movie(movie_id, name, runtime, genre, parental_rating, poster_url, synopsis);
     }
 
-    public static async all(){
+    public static async all() {
       return await knex('Movie').select().orderBy('name', 'asc');
     }
 
     public static async search(genre: string, name: string) {
-      return await knex('Movie').where(function(){
+      return await knex('Movie').where(function() {
         if(genre){
           this.where('genre', 'like', `%${genre}%`);
         }

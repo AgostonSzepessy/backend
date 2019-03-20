@@ -1,4 +1,5 @@
 import { knex } from '../utils/knex';
+import { User } from '../models/user';
 
 /**
  * Models the Participation Schema
@@ -40,6 +41,22 @@ export class Participation {
         .select('User.username', 'fname', 'lname', 'participation_id')
         .where('event_id', event_id)
         .innerJoin('User', 'Participation.username', '=', 'User.username');
+    }
+
+    public static async addUserstoEvent(event_id: number, usernames: string[]) {
+      const result = [];
+      for(const username of usernames) {
+        const data = await Participation.add(event_id, username);
+        const userData = await User.findByUsername(username);
+
+        result.push({
+          ...data,
+          fname: userData.fname,
+          lname: userData.lname,
+        });
+      }
+
+      return result;
     }
 
     // Variable names should match up with database column
