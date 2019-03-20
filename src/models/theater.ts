@@ -23,12 +23,12 @@ export class Theater {
         return new Theater(theater_id, name, address, longitude, latitude);
     }
 
-    public static async all(){
-      return await knex('Theater').select().orderBy('name', 'asc');
+    public static async all() {
+      return knex('Theater').select().orderBy('name', 'asc');
     }
 
-    public static async search(city: string){
-      return await knex('Theater').where('address', 'like', `%${city}%`).orderBy('name', 'asc');
+    public static async search(city: string) {
+      return knex('Theater').where('address', 'like', `%${city}%`).orderBy('name', 'asc');
     }
 
     public static async findById(theater_id: number) {

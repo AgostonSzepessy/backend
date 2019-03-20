@@ -27,8 +27,8 @@ module.exports = (router: express.Router) => {
     }));
 
     /**
-    * searches movies
-    */
+     * searches movies
+     */
     router.get('/movie', asyncHandler(async (req: Request, res: Response) => {
       const genre = req.query.genre || '';
       const name = req.query.name || '';
@@ -36,5 +36,5 @@ module.exports = (router: express.Router) => {
       const movies = await MovieService.search(genre, name);
 
       res.json(new ResponseValue(true, movies));
-    }))
+    }));
 };

@@ -27,16 +27,16 @@ export class Showtime {
 
     public static async search(theater_id: number, movie_id: number, date_time: Date){
       return await knex('Showtime').where(function(){
-        if(theater_id){
+        if(theater_id) {
           this.where('theater_id', theater_id);
         }
         if(movie_id){
           this.where('movie_id', movie_id);
         }
-        if(date_time){
+        if(date_time) {
           date_time = new Date(date_time);
-          let startDate = new Date(date_time.setHours(0,0,0));
-          let endDate = new Date(date_time.setHours(23,59,59));
+          const startDate = new Date(date_time.setHours(0,0,0));
+          const endDate = new Date(date_time.setHours(23,59,59));
           this.whereBetween('date_time', [ startDate, endDate ]);
         }
       }).orderBy('date_time', 'asc');

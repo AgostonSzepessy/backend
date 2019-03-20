@@ -25,8 +25,8 @@ module.exports = (router: express.Router) => {
     }));
 
     /**
-    * Searches showtimes
-    */
+     * Searches showtimes
+     */
     router.get('/showtime', asyncHandler(async (req: Request, res: Response) => {
       const theater_id = req.query.theater_id || '';
       const movie_id = req.query.movie_id || '';

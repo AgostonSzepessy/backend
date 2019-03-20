@@ -9,9 +9,8 @@ export class ChatService {
      * @param event_id id of the event the chat is for
      */
     public static async add(username: string, name: string, event_id: number) {
-        let chat = await Chat.add(name, event_id);
-        let participants = await ChatParticipation.addUserstoChat(chat.chat_id, [ username ]);
-        console.log(participants);
+        const chat = await Chat.add(name, event_id);
+        const participants = await ChatParticipation.addUserstoChat(chat.chat_id, [ username ]);
 
         return chat;
     }

@@ -1,11 +1,8 @@
 import { Event } from '../models/event';
 import { Participation } from '../models/participation';
-<<<<<<< HEAD
 import { Showtime } from '../models/showtime';
 import { Movie } from '../models/movie';
 import { Theater } from '../models/theater';
-=======
->>>>>>> chat auto created when event created, users added to chat when add to event
 import { ChatParticipation } from '../models/chatParticipation';
 import { User } from '../models/user';
 import { Friend } from '../models/friend';
@@ -18,10 +15,10 @@ export class EventService {
      * @param showtime_id the showtime's id
      */
     public static async add(username: string, name: string, showtime_id: number) {
-      let event = await Event.add(name, showtime_id);
+      const event = await Event.add(name, showtime_id);
       await Participation.addUserstoEvent(event.event_id, [ username ]);
 
-	    return event;
+      return event;
     }
 
     /**
@@ -85,7 +82,7 @@ export class EventService {
       // get rid of people already in event
       const currentParticipants = await EventService.getUsersForEvent(event_id);
       usernames = usernames.filter((uname) => {
-        return !currentParticipants.some((participant) => participant.username === uname);
+        return !currentParticipants.some((participant: any) => participant.username === uname);
       });
 
       const addedUsers = await Participation.addUserstoEvent(event_id, usernames);
