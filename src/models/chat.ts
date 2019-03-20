@@ -9,13 +9,15 @@ export class Chat {
      * @param name Name of chat
      * @param eventId Event this chat is for
      */
-    public static async add(name: string, eventId: number): Promise<number> {
+    public static async add(name: string, event_id: number) {
         const chatData = {
             name,
-            event_id: eventId,
+            event_id,
         };
 
-        return (await knex('Chat').returning('chat_id').insert(chatData))[0];
+        let chat_id = (await knex('Chat').returning('chat_id').insert(chatData))[0];
+
+        return { chat_id, name, event_id };
     }
 
     /**
@@ -46,13 +48,15 @@ export class Chat {
      * @param username of the sender
      * @param message_text body of the message
      */
-    public static async addMessage(chat_id: number, username: string, message_text: string): Promise<number> {
+    public static async addMessage(chat_id: number, username: string, message_text: string) {
       const message = {
         chat_id,
         username,
         message_text,
       };
 
-      return (await knex('Message').insert(message).returning('message_id'))[0];
+      let message_id = (await knex('Message').insert(message).returning('message_id'))[0];
+
+      return { message_id, chat_id, username, message_text };
     }
 }

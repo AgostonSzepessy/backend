@@ -10,18 +10,18 @@ module.exports = (router: express.Router) => {
   /**
   * Adds a new chat
   */
-  router.post('/chat', asyncHandler(async (req: Request, res: Response) => {
-    const name = req.body.name;
-    const event_id = req.body.event_id;
-
-    if(!name || !event_id){
-      throw new MovnetError(422, 'All fields must be filled out');
-    }
-
-    const chat = await ChatService.add(name, event_id);
-
-    return res.json(new ResponseValue(true, chat));
-  }));
+  // router.post('/chat', asyncHandler(async (req: Request, res: Response) => {
+  //   const name = req.body.name;
+  //   const event_id = req.body.event_id;
+  //
+  //   if(!name || !event_id){
+  //     throw new MovnetError(422, 'All fields must be filled out');
+  //   }
+  //
+  //   const chat = await ChatService.add(name, event_id);
+  //
+  //   return res.json(new ResponseValue(true, chat));
+  // }));
 
   /**
   * Creates a message and adds it to chat
@@ -42,7 +42,7 @@ module.exports = (router: express.Router) => {
       throw new MovnetError(422, 'All fields must be filled out');
     }
 
-    // TODO enfore the user to be part of the chat
+    // TODO enforce the user to be part of the chat
 
     const message = await ChatService.addMessage(chat_id, username, message_text);
 

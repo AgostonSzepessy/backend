@@ -1,8 +1,11 @@
 import { Event } from '../models/event';
 import { Participation } from '../models/participation';
+<<<<<<< HEAD
 import { Showtime } from '../models/showtime';
 import { Movie } from '../models/movie';
 import { Theater } from '../models/theater';
+=======
+>>>>>>> chat auto created when event created, users added to chat when add to event
 import { ChatParticipation } from '../models/chatParticipation';
 import { User } from '../models/user';
 import { Friend } from '../models/friend';
@@ -16,7 +19,7 @@ export class EventService {
      */
     public static async add(username: string, name: string, showtime_id: number) {
       let event = await Event.add(name, showtime_id);
-      Participation.addUserstoEvent(event.event_id, [ username ]);
+      await Participation.addUserstoEvent(event.event_id, [ username ]);
 
 	    return event;
     }

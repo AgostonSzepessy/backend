@@ -4,6 +4,7 @@ import ResponseValue from '../../utils/ResponseValue';
 import { asyncHandler } from '../../middleware/async-handler';
 import { MovnetError } from '../../middleware/MovnetError';
 import { EventService } from '../../services/event';
+import { ChatService } from '../../services/chat';
 import { RequestWithUser } from '../../interfaces/requests';
 import { Event } from '../../models/event';
 
@@ -14,14 +15,17 @@ module.exports = (router: express.Router) => {
   router.post('/event', asyncHandler(async (req: RequestWithUser, res: Response) => {
     if(req.user){
     	const name = req.body.name;
-	const showtime_id = req.body.showtime_id;
-	const username = req.user.username;
+	    const showtime_id = req.body.showtime_id;
+	    const username = req.user.username;
 
     	if(!name || !showtime_id){
       	    throw new MovnetError(400, 'All fields must e filled out');
     	}
 
+      // create the event
     	const event = await EventService.add(username, name, showtime_id);
+      // create the chat for the event
+      const chat = await ChatService.add(username, name, event.event_id);
 
     	return res.json(new ResponseValue(true, event));
     }
