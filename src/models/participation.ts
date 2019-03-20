@@ -37,7 +37,7 @@ export class Participation {
      */
     public static async getUsersForEvent(event_id: number) {
       return knex('Participation')
-        .select('*')
+        .select('User.username', 'fname', 'lname', 'participation_id')
         .where('event_id', event_id)
         .innerJoin('User', 'Participation.username', '=', 'User.username');
     }

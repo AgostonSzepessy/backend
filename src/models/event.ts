@@ -25,7 +25,7 @@ export class Event {
   }
 
   public static async getData(event_id: number) {
-    const data = (await knex('Event').select('name', 'showtime_id').where('event_id', event_id))[0];
+    const data = (await knex('Event').select('name', 'showtime_id', 'event_id').where('event_id', event_id))[0];
 
     return data;
   }
