@@ -21,4 +21,8 @@ export class MovieService {
       }
       return await Movie.search(genre, name);
     }
+
+    public static async findById(movie_id: number) {
+      return Movie.findById(movie_id);
+    }
 }

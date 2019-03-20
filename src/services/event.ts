@@ -1,5 +1,9 @@
 import { Event } from '../models/event';
 import { Participation } from '../models/participation';
+import { Showtime } from '../models/showtime';
+import { Movie } from '../models/movie';
+import { Theater } from '../models/theater';
+import { logger } from '../utils/logger';
 
 export class EventService {
     /**
@@ -16,7 +20,15 @@ export class EventService {
      * @param username
      */
     public static async getEventsForUser(username: string) {
-      return Participation.getEventsForUser(username);
+      const participations = await Participation.getEventsForUser(username);
+
+      const events = [];
+
+      for(const p of participations) {
+        events.push(await this.getEventData(p.event_id));
+      }
+
+      return events;
     }
 
     /**
@@ -25,5 +37,25 @@ export class EventService {
      */
     public static async getUsersForEvent(event_id: number) {
       return Participation.getUsersForEvent(event_id);
+    }
+
+    /**
+     * Returns data about an event, including:
+     * name, showtime_id, movie, theater and users
+     */
+    public static async getEventData(event_id: number) {
+      const eventData = await Event.getData(event_id);
+      const showtimeData = await Showtime.findById(eventData.showtime_id);
+      const users = await Participation.getUsersForEvent(event_id);
+      const movieData = await Movie.findById(showtimeData.movie_id);
+      const theaterData = await Theater.findById(showtimeData.theater_id);
+
+      return {
+        eventData,
+        showtimeData,
+        users,
+        movieData,
+        theaterData,
+      };
     }
 }

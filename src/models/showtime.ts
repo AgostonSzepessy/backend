@@ -42,6 +42,10 @@ export class Showtime {
       }).orderBy('date_time', 'asc');
     }
 
+    public static async findById(showtime_id: number) {
+      return (await knex('Showtime').select('*').where('showtime_id', showtime_id))[0];
+    }
+
     // Variable names should match up with database column
     // names so this rule needs disabled
     /* tslint:disable:variable-name */

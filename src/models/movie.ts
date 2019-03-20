@@ -45,6 +45,10 @@ export class Movie {
       }).orderBy('name', 'asc');
     }
 
+    public static async findById(movie_id: number) {
+      return (await knex('Movie').select('*').where('movie_id', movie_id))[0];
+    }
+
     // Variable names should match up with database column
     // names so this rule needs disabled
     /* tslint:disable:variable-name */
