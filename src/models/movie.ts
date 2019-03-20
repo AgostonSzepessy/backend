@@ -46,7 +46,8 @@ export class Movie {
     }
 
     public static async findById(movie_id: number) {
-      return (await knex('Movie').select('*').where('movie_id', movie_id))[0];
+      return (await knex('Movie').select('movie_id', 'name', 'runtime', 'genre', 'poster_url', 'synopsis')
+        .where('movie_id', movie_id))[0];
     }
 
     // Variable names should match up with database column
