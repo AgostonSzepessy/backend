@@ -55,8 +55,12 @@ export class Chat {
         message_text,
       };
 
-      let message_id = (await knex('Message').insert(message).returning('message_id'))[0];
+      const message_id = (await knex('Message').insert(message).returning('message_id'))[0];
 
       return { message_id, chat_id, username, message_text };
+    }
+
+    public static async findChatFromEvent(event_id: number) {
+        return (await knex('Chat').select('*').where('event_id', event_id))[0];
     }
 }

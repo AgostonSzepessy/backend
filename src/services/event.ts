@@ -8,6 +8,7 @@ import { User } from '../models/user';
 import { Friend } from '../models/friend';
 import { logger } from '../utils/logger';
 import { MovnetError } from '../middleware/MovnetError';
+import { Chat } from '../models/chat';
 
 export class EventService {
     /**
@@ -56,6 +57,7 @@ export class EventService {
       const users = await Participation.getUsersForEvent(event_id);
       const movieData = await Movie.findById(showtimeData.movie_id);
       const theaterData = await Theater.findById(showtimeData.theater_id);
+      const chatData = await Chat.findChatFromEvent(event_id);
 
       return {
         eventData,
@@ -63,6 +65,7 @@ export class EventService {
         users,
         movieData,
         theaterData,
+        chatData,
       };
     }
 
