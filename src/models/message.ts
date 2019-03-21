@@ -48,7 +48,6 @@ export class Message {
 
       messsages.map((m: any) => {
         const date = new Date(m.date_time);
-        console.log(date);
         m.date_time = dateHandler.convertToEST(date);
         return m;
       });

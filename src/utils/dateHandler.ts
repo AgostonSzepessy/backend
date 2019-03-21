@@ -9,7 +9,6 @@ class DateHandler {
      */
     public convertToEST(date: Date): MovnetDate {
         const dt = DateTime.fromJSDate(date, { zone: 'America/New_York' });
-        console.log(dt);
         const dayMonth = dt.toFormat('ccc LLL d');
         const time = dt.toFormat('hh:mm a');
 
