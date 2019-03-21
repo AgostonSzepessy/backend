@@ -1,4 +1,5 @@
 import { knex } from '../utils/knex';
+import { dateHandler } from '../utils/dateHandler';
 
 /**
  * Model for messages
@@ -39,11 +40,20 @@ export class Message {
         limit = 50; // cap limit to 50
       }
 
-      return knex('Message')
+      const messsages = await knex('Message')
         .select('*')
         .where('chat_id', chat_id)
         .orderBy('date_time', 'desc')
         .limit(limit);
+
+      messsages.map((m: any) => {
+        const date = new Date(m.date_time);
+        console.log(date);
+        m.date_time = dateHandler.convertToEST(date);
+        return m;
+      });
+
+      return messsages;
     }
 
     // Variable names should match up with database column
