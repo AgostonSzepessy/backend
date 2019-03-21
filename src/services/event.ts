@@ -134,4 +134,19 @@ export class EventService {
         throw new MovnetError(422, `${username} is not a member of this event`);
       }
     }
+
+    /**
+     * Retrieves all friends who are not part of this event
+     * @param event_id id of event
+     * @param username username of user modifying event
+     */
+    public static async getNonParticipantFriends(event_id: number, username: string) {
+      // filter out users who aren't friends with the person who made the event
+      const { confirmed } = await Friend.getFriends(username);
+      const participants = await this.getUsersForEvent(event_id);
+
+      const users = confirmed.filter((c: any) => !participants.find((p: any) => p.username == c.username))
+
+      return users;
+    }
 }
