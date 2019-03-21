@@ -16,12 +16,13 @@ module.exports = (router: express.Router) => {
         const parentalRating = req.body.parentalRating;
         const posterUrl = req.body.posterUrl;
         const synopsis = req.body.synopsis;
+        const movie_length = req.body.movie_length || '';
 
         if(!name || !runtime || !genre || !parentalRating || !posterUrl || !synopsis) {
             throw new MovnetError(400, 'All fields must be filled out');
         }
 
-        const movie = await MovieService.add(name, runtime, genre, parentalRating, posterUrl, synopsis);
+        const movie = await MovieService.add(name, runtime, genre, parentalRating, posterUrl, synopsis, movie_length);
 
         res.json(new ResponseValue(true, movie));
     }));
