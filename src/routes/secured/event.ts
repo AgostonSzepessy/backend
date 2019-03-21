@@ -114,4 +114,20 @@ module.exports = (router: express.Router) => {
 
     res.json(new ResponseValue(true, `Deleted ${event_id}`));
   }));
+
+  /**
+   * Gets all friends that aren't part of the event
+   */
+  router.get('/event/:event_id/friend', asyncHandler(async (req: RequestWithUser, res: Response) => {
+    if(!req.user) {
+      throw new MovnetError(422, 'User is corrupted');
+    }
+
+    const event_id = req.params.event_id;
+    const username = req.user.username;
+
+    const friends = await EventService.getNonParticipantFriends(event_id, username);
+
+    res.json(new ResponseValue(true, friends));
+  }));
 };
