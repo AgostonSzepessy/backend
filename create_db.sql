@@ -22,7 +22,8 @@ CREATE TABLE Movie(
     genre VARCHAR(32),
     parental_rating CHAR(5),
     poster_url CHAR(255),
-    synopsis TEXT
+    synopsis TEXT,
+    movie_length TINYTEXT
 );
 
 CREATE TABLE Theater(
