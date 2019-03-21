@@ -11,8 +11,8 @@ export class MovieService {
      * @param synopsis synopsis of movie
      */
     public static async add(name: string, runtime: number, genre: string, parental_rating: string,
-                            poster_url: string, synopsis: string) {
-        return Movie.add(name, runtime, genre, parental_rating, poster_url, synopsis);
+                            poster_url: string, synopsis: string, movie_length: string) {
+        return Movie.add(name, runtime, genre, parental_rating, poster_url, synopsis, movie_length);
     }
 
     public static async search(genre: string, name: string){
