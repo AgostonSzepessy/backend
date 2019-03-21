@@ -31,12 +31,11 @@ export class Event {
   }
 
   public static async updateName(event_id: number, name: string) {
-    const data = (await knex('Event').update({ name }).where('event_id', event_id))[0];
+    await knex('Event').update({ name }).where('event_id', event_id);
 
     return {
       event_id,
       name,
-      showtime_id: data.showtime_id,
     };
   }
 
