@@ -1,5 +1,7 @@
 import { Showtime } from '../models/showtime';
 import { logger } from '../utils/logger';
+import { dateHandler } from '../utils/dateHandler';
+import { DateTime } from 'luxon';
 
 export class ShowtimeService {
     /**
@@ -18,29 +20,16 @@ export class ShowtimeService {
       let showtimes = await Showtime.search(theater_id, movie_id, date_time);
 
       // format the date and time for each showtime
-      return showtimes.map((showtime:any) => {
+      return showtimes.map((showtime: any) => {
         // get the date_time as a string (this is easiest way...)
-        let date_time = (new Date(JSON.stringify(showtime.date_time).replace(/\"/g, '')));
-        let date = date_time.toString().split(' ').slice(0,4).join(' ');
-        const timeRegex = /\d+:\d+/; // matches time formats of HH:MM, where the first H could be missing
-        let time = date_time.toLocaleTimeString('en-US').split(' ').map(
-          (str, index) => {
-            if(index>0) {
-              return str;
-            } else {
-                const timeResult = timeRegex.exec(str);
+        const dt = (new Date(JSON.stringify(showtime.date_time).replace(/\"/g, '')));
+        const formattedDate = dateHandler.convertToEST(new Date(showtime.date_time));
 
-                if(timeResult) {
-                  return timeResult[0];
-                }
-
-                return 'Invalid';
-              }
-          }).join(' ');
-        showtime.date = date;
-        showtime.time = time;
-        showtime.date_time = date_time.toString();
+        showtime.date = formattedDate.date;
+        showtime.time = formattedDate.time;
+        showtime.date_time = dt.toString();
         return showtime;
       });
+
     }
 }

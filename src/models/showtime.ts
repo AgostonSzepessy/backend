@@ -1,4 +1,5 @@
 import { knex } from '../utils/knex';
+import { dateHandler } from '../utils/dateHandler';
 
 /**
  * Models the Showtime Schema
@@ -43,7 +44,8 @@ export class Showtime {
     }
 
     public static async findById(showtime_id: number) {
-      return (await knex('Showtime').select('*').where('showtime_id', showtime_id))[0];
+      const showtime = (await knex('Showtime').select('*').where('showtime_id', showtime_id))[0];
+      return fixDate(showtime);
     }
 
     // Variable names should match up with database column
@@ -54,6 +56,8 @@ export class Showtime {
     public movie_id: number;
     public date_time: Date;
     public cost: number;
+    public date!: string;
+    public time!: string;
     /* tslint:enable:variable-name */
 
     constructor(showtime_id: number, theater_id: number, movie_id: number, date_time: Date, cost: number) {
@@ -62,5 +66,17 @@ export class Showtime {
       this.movie_id = movie_id;
       this.date_time = date_time;
       this.cost = cost;
+
+      fixDate(this);
     }
+}
+
+function fixDate(showtime: Showtime) {
+  const dt = (new Date(JSON.stringify(showtime.date_time).replace(/\"/g, '')));
+  const formattedDate = dateHandler.convertToEST(new Date(showtime.date_time));
+
+  showtime.date = formattedDate.date;
+  showtime.time = formattedDate.time;
+
+  return showtime;
 }
