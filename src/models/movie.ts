@@ -15,7 +15,7 @@ export class Movie {
      * @param synopsis synopsis of movie
      */
     public static async add(name: string, runtime: number, genre: string, parental_rating: string,
-                            poster_url: string, synopsis: string) {
+                            poster_url: string, synopsis: string, movie_length: string) {
         const data = {
             name,
             runtime,
@@ -23,11 +23,12 @@ export class Movie {
             parental_rating,
             poster_url,
             synopsis,
+            movie_length
         };
 
         const movie_id = (await knex('Movie').insert(data).returning('movie_id'))[0];
 
-        return new Movie(movie_id, name, runtime, genre, parental_rating, poster_url, synopsis);
+        return new Movie(movie_id, name, runtime, genre, parental_rating, poster_url, synopsis, movie_length);
     }
 
     public static async all() {
@@ -46,7 +47,8 @@ export class Movie {
     }
 
     public static async findById(movie_id: number) {
-      return (await knex('Movie').select('movie_id', 'name', 'runtime', 'genre', 'poster_url', 'synopsis')
+      return (await knex('Movie')
+        .select('movie_id', 'name', 'runtime', 'genre', 'poster_url', 'synopsis', 'movie_length')
         .where('movie_id', movie_id))[0];
     }
 
@@ -60,10 +62,11 @@ export class Movie {
     public parental_rating: string;
     public poster_url: string;
     public synopsis: string;
+    public movie_length!: string;
     /* tslint:enable:variable-name */
 
     constructor(movie_id: number, name: string, runtime: number, genre: string, parental_rating: string,
-                poster_url: string, synopsis: string) {
+                poster_url: string, synopsis: string, movie_length: string) {
         this.movie_id = movie_id;
         this.name = name;
         this.runtime = runtime;
@@ -71,5 +74,6 @@ export class Movie {
         this.parental_rating = parental_rating;
         this.poster_url = poster_url;
         this.synopsis = synopsis;
+        this.movie_length = movie_length;
     }
 }
